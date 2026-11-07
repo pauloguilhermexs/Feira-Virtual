@@ -89,4 +89,4 @@ produtor: `/api/produtor/produtos/` (CRUD)
 ## Próximos passos sugeridos
 
 Upload de imagens (Pillow + `ImageField`), PostgreSQL, CORS (`django-cors-headers`) para o front-end,
-envio real de e-mail, taxa de frete, notificações.
+envio real de e-mail, taxa de frete, notificações para os usuários.
