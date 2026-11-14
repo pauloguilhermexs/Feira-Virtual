@@ -17,6 +17,7 @@ Plataforma completa (Backend API + Frontend integrado) para conexão direta entr
 - [Principais Endpoints da API](#-principais-endpoints-da-api)
 - [Decisões e Regras de Negócio](#-decisões-e-regras-de-negócio)
 - [Design System & Frontend](#-design-system--frontend)
+- [Próximos Passos Sugeridos](#-próximos-passos-sugeridos)
 
 ---
 
@@ -25,7 +26,7 @@ Plataforma completa (Backend API + Frontend integrado) para conexão direta entr
 O sistema é composto por:
 - **Backend:** Python + Django 6.x + Django REST Framework + SimpleJWT.
 - **Frontend:** HTML5 semântico, CSS3 Moderno (Custom Properties) e Vanilla JavaScript, servido de forma unificada pelo próprio servidor Django na raiz (`/`).
-- **Banco de Dados:** Híbrido e flexível — roda imediatamente com SQLite para desenvolvimento ágil ou com MySQL 8.x para produção, configurável apenas pelo arquivo `.env`.
+- **Banco de Dados:** Híbrido e flexível — roda imediatamente com SQLite para desenvolvimento ágil ou com MySQL 8.x para produção, configurável pelo arquivo `.env`.
 - **Documentação de API:** Swagger interativo gerado automaticamente via `drf-spectacular`.
 
 ---
@@ -208,3 +209,11 @@ O frontend segue especificações modernas de usabilidade e acessibilidade (WCAG
 - **Tipografia:** `Inter` para legibilidade de dados e interface; `Fraunces` (serif) para títulos e destaques acolhedores.
 - **Componentes:** Carrinho lateral (Drawer) em CSS puro, modais acessíveis com foco visível, toasts de notificação assíncronos e badges de status.
 - **Tokens CSS:** Variáveis customizáveis centralizadas no topo de `frontend/style.css`.
+
+---
+
+## 🔮 Próximos Passos Sugeridos
+
+- Integração direta com gateway de pagamento Pix dinâmico (Mercado Pago / Efí / Asaas).
+- Notificações automáticas para produtores e clientes (WhatsApp / Push / E-mail via SendGrid).
+- Cálculo automatizado de taxa de frete por quilometragem ou CEP (ViaCEP).
