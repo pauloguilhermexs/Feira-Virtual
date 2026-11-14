@@ -9,7 +9,7 @@ class PerfilProdutorSerializer(serializers.ModelSerializer):
     class Meta:
         model = PerfilProdutor
         fields = ["id", "status", "nome_propriedade", "descricao", "endereco_propriedade",
-                  "cidade", "estado", "chave_pix", "possui_maquininha", "aceita_dinheiro"]
+                  "cidade", "estado", "foto_propriedade", "chave_pix", "possui_maquininha", "aceita_dinheiro"]
         read_only_fields = ["status"]
 
 

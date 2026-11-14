@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Feira Virtual — Do Campo à sua Mesa</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fraunces:ital,wght@0,700;1,700&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- ===================== NAVBAR ===================== -->
+  <header class="navbar" id="navbar">
+    <div class="navbar__inner container">
+
+      <!-- Logo -->
+      <a href="#" class="navbar__logo" aria-label="Feira Virtual - Página inicial">
+        <div class="navbar__logo-icon" aria-hidden="true">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="16" cy="16" r="16" fill="var(--color-primary)"/>
+            <path d="M16 6 C16 6, 24 11, 24 18 C24 23 20.4 26 16 26 C11.6 26 8 23 8 18 C8 11 16 6 16 6Z" fill="white" opacity="0.25"/>
+            <path d="M16 8 C16 8, 22 13 22 19 C22 22.3 19.3 25 16 25 C12.7 25 10 22.3 10 19 C10 13 16 8 16 8Z" fill="white" opacity="0.4"/>
+            <path d="M16 10 L16 24" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M16 15 C16 15 19 13 21 14" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M16 19 C16 19 13 17 11 18" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="navbar__logo-text">
+          <span class="navbar__logo-name">Feira Virtual</span>
+          <span class="navbar__logo-tagline">Do campo à sua mesa</span>
+        </div>
+      </a>
+
+      <!-- Nav Links (desktop) -->
+      <nav class="navbar__nav" aria-label="Navegação principal">
+        <ul class="navbar__links" role="list">
+          <li><a href="#produtos" class="navbar__link">Produtos</a></li>
+          <li><a href="#produtores" class="navbar__link">Produtores</a></li>
+          <li><a href="#como-funciona" class="navbar__link">Como funciona</a></li>
+          <li><a href="/api/docs/" target="_blank" class="navbar__link navbar__link--api" title="Documentação Swagger">API Swagger ↗</a></li>
+        </ul>
+      </nav>
+
+      <!-- Ações direita -->
+      <div class="navbar__actions">
+
+        <!-- Toggle Dark Mode -->
+        <button class="btn-icon" id="themeToggle" aria-label="Alternar modo escuro" title="Alternar tema">
+          <svg class="icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+            <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+          </svg>
+          <svg class="icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+
+        <!-- Carrinho -->
+        <button class="btn-icon btn-icon--cart" id="btnOpenCart" aria-label="Ver carrinho">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+          </svg>
+          <span class="cart-badge" id="cartBadge" aria-hidden="true" style="display: none;">0</span>
+        </button>
+
+        <!-- Área de Autenticação Dinâmica (Renderizada via JS) -->
+        <div id="navAuthArea" class="navbar__auth-area">
+          <button class="btn btn--outline btn--sm" id="btnOpenLogin">Entrar</button>
+          <button class="btn btn--primary btn--sm" id="btnOpenRegister">Cadastrar</button>
+        </div>
+
+        <!-- Hamburguer (mobile) -->
+        <button class="navbar__hamburger" id="hamburger" aria-label="Abrir menu" aria-expanded="false" aria-controls="mobileMenu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Menu Mobile -->
+    <div class="navbar__mobile" id="mobileMenu" aria-hidden="true">
+      <nav aria-label="Menu mobile">
+        <ul role="list">
+          <li><a href="#produtos" class="navbar__link">Produtos</a></li>
+          <li><a href="#produtores" class="navbar__link">Produtores</a></li>
+          <li><a href="#como-funciona" class="navbar__link">Como funciona</a></li>
+          <li><a href="/api/docs/" target="_blank" class="navbar__link">API Swagger ↗</a></li>
+        </ul>
+        <div class="navbar__mobile-actions" id="mobileAuthArea">
+          <button class="btn btn--outline btn--full" id="btnMobileLogin">Entrar</button>
+          <button class="btn btn--primary btn--full" id="btnMobileRegister">Cadastrar</button>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ===================== HERO SECTION ===================== -->
+  <main>
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero__bg-shapes" aria-hidden="true">
+        <div class="hero__shape hero__shape--1"></div>
+        <div class="hero__shape hero__shape--2"></div>
+        <div class="hero__shape hero__shape--3"></div>
+      </div>
+
+      <div class="hero__inner container">
+        <!-- Coluna esquerda -->
+        <div class="hero__content">
+          <div class="hero__eyebrow" aria-label="Destaque">
+            <span class="badge badge--success">🌱 Agricultura familiar</span>
+            <span class="badge badge--outline">Direto do produtor</span>
+          </div>
+
+          <h1 class="hero__title" id="hero-title">
+            Produtos frescos,<br/>
+            <em>direto de quem planta</em><br/>
+            até você.
+          </h1>
+
+          <p class="hero__subtitle">
+            Conectamos produtores rurais, coletores e compradores em uma
+            feira digital segura, acolhedora e transparente. Sem
+            atravessadores. Sem complicação.
+          </p>
+
+          <div class="hero__social-proof">
+            <div class="hero__avatars" aria-hidden="true">
+              <span class="avatar avatar--1"></span>
+              <span class="avatar avatar--2"></span>
+              <span class="avatar avatar--3"></span>
+              <span class="avatar avatar--4"></span>
+            </div>
+            <p class="hero__social-text">
+              <strong>+1.200 famílias</strong> atendidas esta semana
+            </p>
+          </div>
+
+          <div class="hero__ctas">
+            <a href="#produtos" class="btn btn--cta btn--lg">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+              </svg>
+              Ver produtos disponíveis
+            </a>
+            <a href="#produtores" class="btn btn--ghost btn--lg">
+              Conhecer produtores
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+              </svg>
+            </a>
+          </div>
+
+          <div class="hero__profiles">
+            <span class="hero__profile-label">Perfis integrados:</span>
+            <div class="hero__profile-tags">
+              <span class="profile-tag profile-tag--buyer">🛒 Comprador</span>
+              <span class="profile-tag profile-tag--producer">🌾 Produtor Rural</span>
+              <span class="profile-tag profile-tag--collector">🧺 Entregador</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Coluna direita: card de produto flutuante -->
+        <div class="hero__visual" aria-hidden="true">
+          <div class="product-card-hero">
+            <div class="product-card-hero__header">
+              <div class="product-card-hero__img">
+                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" width="120" height="120">
+                  <circle cx="100" cy="100" r="90" fill="var(--color-primary-tint)"/>
+                  <ellipse cx="100" cy="120" rx="55" ry="30" fill="#6CBF66" opacity="0.7"/>
+                  <ellipse cx="80" cy="105" rx="38" ry="22" fill="#3D8B37"/>
+                  <ellipse cx="120" cy="100" rx="35" ry="20" fill="#2E6B28"/>
+                  <ellipse cx="100" cy="95" rx="30" ry="18" fill="#6CBF66"/>
+                  <ellipse cx="100" cy="92" rx="22" ry="14" fill="#3D8B37"/>
+                  <line x1="100" y1="118" x2="100" y2="145" stroke="#2E6B28" stroke-width="4" stroke-linecap="round"/>
+                  <ellipse cx="90" cy="88" rx="8" ry="5" fill="white" opacity="0.3" transform="rotate(-20 90 88)"/>
+                </svg>
+              </div>
+              <div class="product-card-hero__badge">
+                <span>⭐ 5.0</span>
+              </div>
+            </div>
+
+            <div class="product-card-hero__body">
+              <span class="product-card-hero__category">🌿 Hortaliças · Orgânico</span>
+              <h3 class="product-card-hero__name">Alface Crespa</h3>
+              <p class="product-card-hero__producer">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+                </svg>
+                Sítio Esperança (Natal/RN)
+              </p>
+              <div class="product-card-hero__footer">
+                <div class="product-card-hero__price">
+                  <span class="price-unit">R$ 3,50</span>
+                  <span class="price-label">/ maço</span>
+                </div>
+                <a href="#produtos" class="btn btn--cta btn--sm">Comprar</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="stats-card-hero stats-card-hero--top">
+            <div class="stats-card-hero__icon">🚜</div>
+            <div>
+              <strong>Produtores locais</strong>
+              <span>Agricultura 100% familiar</span>
+            </div>
+          </div>
+
+          <div class="stats-card-hero stats-card-hero--bottom">
+            <div class="stats-card-hero__icon">⚡</div>
+            <div>
+              <strong>API Integrada</strong>
+              <span>Django REST + MySQL/SQLite</span>
+            </div>
+          </div>
+
+          <div class="hero__deco-circle hero__deco-circle--1"></div>
+          <div class="hero__deco-circle hero__deco-circle--2"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== TRUST BAR ===================== -->
+    <section class="trust-bar" aria-label="Diferenciais">
+      <div class="container">
+        <ul class="trust-bar__list" role="list">
+          <li class="trust-bar__item">
+            <span class="trust-bar__icon">🌱</span>
+            <div>
+              <strong>Produto fresco</strong>
+              <span>Colhido e enviado no mesmo dia</span>
+            </div>
+          </li>
+          <li class="trust-bar__item">
+            <span class="trust-bar__icon">🔒</span>
+            <div>
+              <strong>Pagamento seguro</strong>
+              <span>Pix, Cartão ou Dinheiro</span>
+            </div>
+          </li>
+          <li class="trust-bar__item">
+            <span class="trust-bar__icon">🤝</span>
+            <div>
+              <strong>Direto do produtor</strong>
+              <span>Preço justo para quem planta e consome</span>
+            </div>
+          </li>
+          <li class="trust-bar__item">
+            <span class="trust-bar__icon">📍</span>
+            <div>
+              <strong>Entregas locais</strong>
+              <span>Retirada ou entrega em domicílio</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ===================== CATÁLOGO DE PRODUTOS DINÂMICO ===================== -->
+    <section class="section-catalog" id="produtos">
+      <div class="container">
+        <div class="section-header">
+          <span class="badge badge--success">Feira Aberta</span>
+          <h2 class="section-title">Produtos Frescos da Semana</h2>
+          <p class="section-subtitle">Itens colhidos diretamente pelos produtores parceiros. Estoque e preços atualizados em tempo real.</p>
+        </div>
+
+        <!-- Barra de Busca e Filtros -->
+        <div class="catalog-controls">
+          <div class="search-box">
+            <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+            <input type="text" id="searchInput" placeholder="Buscar por alface, tomate, cenoura..." aria-label="Buscar produtos" />
+            <button id="btnClearSearch" class="btn-clear" style="display: none;" title="Limpar busca">✕</button>
+          </div>
+
+          <!-- Filtro de Tipo de Produção e Ordenação -->
+          <div class="select-filters">
+            <select id="tipoProducaoSelect" class="form-select" aria-label="Filtrar por tipo de produção">
+              <option value="">Todos os cultivos</option>
+              <option value="ORGANICO_CERTIFICADO">Orgânico Certificado</option>
+              <option value="AGROECOLOGICO">Agroecológico</option>
+              <option value="CONVENCIONAL">Convencional</option>
+            </select>
+
+            <select id="orderingSelect" class="form-select" aria-label="Ordenar produtos">
+              <option value="nome">Nome (A-Z)</option>
+              <option value="preco">Menor Preço</option>
+              <option value="-preco">Maior Preço</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Categorias dinâmicas (Pills) -->
+        <div class="category-pills" id="categoryPills" role="tablist">
+          <button class="pill active" data-category="" role="tab" aria-selected="true">Todas as categorias</button>
+          <!-- Injetado dinamicamente via JS -->
+        </div>
+
+        <!-- Grid de Produtos -->
+        <div class="products-grid" id="productsGrid" aria-live="polite">
+          <!-- Cards injetados via JS -->
+          <div class="catalog-loading">
+            <div class="spinner"></div>
+            <p>Carregando feira virtual...</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== PRODUTORES EM DESTAQUE ===================== -->
+    <section class="section-producers" id="produtores">
+      <div class="container">
+        <div class="section-header">
+          <span class="badge badge--outline">Quem planta</span>
+          <h2 class="section-title">Nossos Produtores Parceiros</h2>
+          <p class="section-subtitle">Conheça as famílias e propriedades rurais cadastradas na feira.</p>
+        </div>
+
+        <div class="producer-showcase">
+          <div class="producer-card">
+            <div class="producer-card__avatar">🏡</div>
+            <div class="producer-card__info">
+              <div class="producer-card__header">
+                <h3>Sítio Esperança</h3>
+                <span class="badge badge--success">✓ Aprovado</span>
+              </div>
+              <p class="producer-card__location">📍 Natal / RN · Agricultura Agroecológica</p>
+              <p class="producer-card__desc">Produção familiar sustentável sem uso de agrotóxicos. Especialistas em hortaliças hidropônicas e mel de abelha nativa.</p>
+              <div class="producer-card__badges">
+                <span class="payment-badge">⚡ Aceita Pix</span>
+                <span class="payment-badge">💳 Maquininha</span>
+                <span class="payment-badge">💵 Dinheiro</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== COMO FUNCIONA ===================== -->
+    <section class="section-how" id="como-funciona">
+      <div class="container">
+        <div class="section-header">
+          <span class="badge badge--outline">Passo a passo</span>
+          <h2 class="section-title">Como funciona a Feira</h2>
+        </div>
+
+        <div class="steps-grid">
+          <div class="step-card">
+            <div class="step-card__num">1</div>
+            <h3>Escolha seus produtos</h3>
+            <p>Navegue pelo catálogo e adicione itens frescos de produtores da sua região ao carrinho.</p>
+          </div>
+          <div class="step-card">
+            <div class="step-card__num">2</div>
+            <h3>Finalize o pedido</h3>
+            <p>Selecione entrega em domicílio ou retirada direta na propriedade, e sua forma de pagamento.</p>
+          </div>
+          <div class="step-card">
+            <div class="step-card__num">3</div>
+            <h3>O produtor colhe</h3>
+            <p>O produtor confirma o pedido, separa seus produtos frescos e o estoque é baixado com segurança.</p>
+          </div>
+          <div class="step-card">
+            <div class="step-card__num">4</div>
+            <h3>Receba com carinho</h3>
+            <p>O entregador leva até você ou você retira direto com a família produtora.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===================== FOOTER ===================== -->
+  <footer class="footer">
+    <div class="container footer__inner">
+      <div class="footer__brand">
+        <span class="navbar__logo-name">Feira Virtual</span>
+        <p>Plataforma de venda direta da agricultura familiar.</p>
+      </div>
+      <div class="footer__links">
+        <a href="/api/docs/" target="_blank">Documentação da API (Swagger)</a>
+        <a href="/admin/" target="_blank">Painel Administrativo Django</a>
+      </div>
+      <p class="footer__copy">© 2026 Feira Virtual. Todos os direitos reservados.</p>
+    </div>
+  </footer>
+
+  <!-- ===================== DRAWER DO CARRINHO ===================== -->
+  <div class="drawer-overlay" id="cartOverlay"></div>
+  <aside class="cart-drawer" id="cartDrawer" aria-hidden="true" role="dialog" aria-labelledby="cartTitle">
+    <div class="cart-drawer__header">
+      <div class="cart-drawer__title-wrap">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+        </svg>
+        <h2 id="cartTitle">Meu Carrinho</h2>
+      </div>
+      <button class="btn-close" id="btnCloseCart" aria-label="Fechar carrinho">✕</button>
+    </div>
+
+    <!-- Lista de itens do carrinho -->
+    <div class="cart-drawer__body" id="cartItemsList">
+      <div class="cart-empty">
+        <span class="cart-empty__icon">🧺</span>
+        <p>Seu carrinho está vazio.</p>
+        <a href="#produtos" class="btn btn--outline btn--sm" id="btnContinueShopping">Explorar produtos</a>
+      </div>
+    </div>
+
+    <!-- Rodapé com total e checkout -->
+    <div class="cart-drawer__footer" id="cartFooter" style="display: none;">
+      <div class="cart-summary">
+        <span>Total:</span>
+        <strong id="cartTotalVal">R$ 0,00</strong>
+      </div>
+      <button class="btn btn--cta btn--full btn--lg" id="btnCheckout">
+        Finalizar Pedido
+      </button>
+      <button class="btn btn--ghost btn--full btn--sm" id="btnClearCart" style="margin-top: var(--space-2);">
+        Limpar carrinho
+      </button>
+    </div>
+  </aside>
+
+  <!-- ===================== MODAL DE AUTENTICAÇÃO (LOGIN / REGISTRO) ===================== -->
+  <div class="modal-overlay" id="authModalOverlay">
+    <div class="modal-card" role="dialog" aria-labelledby="authModalTitle">
+      <button class="btn-close modal-close" id="btnCloseAuthModal">✕</button>
+
+      <div class="modal-tabs" role="tablist">
+        <button class="modal-tab active" id="tabLogin" role="tab" aria-selected="true">Entrar</button>
+        <button class="modal-tab" id="tabRegister" role="tab" aria-selected="false">Criar Conta</button>
+      </div>
+
+      <!-- Formulário de Login -->
+      <form id="loginForm" class="auth-form">
+        <h3 id="authModalTitle" class="auth-form__title">Acessar sua conta</h3>
+        <p class="auth-form__subtitle">Compre direto de produtores familiares da sua região.</p>
+
+        <!-- Dica de usuário de teste rápida -->
+        <div class="demo-box" id="demoAccountBox">
+          <p><strong>💡 Acesso rápido para teste:</strong></p>
+          <button type="button" class="btn-link" id="btnFillDemoClient">
+            Preencher como: <code>cliente_teste</code>
+          </button>
+          ou
+          <button type="button" class="btn-link" id="btnFillDemoAdmin">
+            <code>paulo</code> (Admin)
+          </button>
+        </div>
+
+        <div class="form-group">
+          <label for="loginUsername">Nome de usuário:</label>
+          <input type="text" id="loginUsername" required placeholder="Seu usuário" class="form-input" />
+        </div>
+
+        <div class="form-group">
+          <label for="loginPassword">Senha:</label>
+          <input type="password" id="loginPassword" required placeholder="Sua senha" class="form-input" />
+        </div>
+
+        <div id="loginError" class="auth-error" style="display: none;"></div>
+
+        <button type="submit" class="btn btn--primary btn--full btn--lg" id="btnLoginSubmit">
+          Entrar na Feira
+        </button>
+      </form>
+
+      <!-- Formulário de Registro -->
+      <form id="registerForm" class="auth-form" style="display: none;">
+        <h3 class="auth-form__title">Criar conta de Cliente</h3>
+        <p class="auth-form__subtitle">Cadastre-se em segundos para comprar na feira.</p>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="regFirstName">Nome:</label>
+            <input type="text" id="regFirstName" required placeholder="Ex: João" class="form-input" />
+          </div>
+          <div class="form-group">
+            <label for="regLastName">Sobrenome:</label>
+            <input type="text" id="regLastName" required placeholder="Ex: Silva" class="form-input" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="regEmail">E-mail:</label>
+          <input type="email" id="regEmail" required placeholder="seu@email.com" class="form-input" />
+        </div>
+
+        <div class="form-group">
+          <label for="regUsername">Usuário:</label>
+          <input type="text" id="regUsername" required placeholder="Escolha um nome de usuário" class="form-input" />
+        </div>
+
+        <div class="form-group">
+          <label for="regPassword">Senha:</label>
+          <input type="password" id="regPassword" required placeholder="Mínimo 8 caracteres" class="form-input" />
+        </div>
+
+        <div id="registerError" class="auth-error" style="display: none;"></div>
+
+        <button type="submit" class="btn btn--cta btn--full btn--lg" id="btnRegisterSubmit">
+          Criar minha conta
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===================== MODAL DE CHECKOUT ===================== -->
+  <div class="modal-overlay" id="checkoutModalOverlay">
+    <div class="modal-card" role="dialog" aria-labelledby="checkoutModalTitle">
+      <button class="btn-close modal-close" id="btnCloseCheckoutModal">✕</button>
+
+      <h3 id="checkoutModalTitle" class="auth-form__title">Confirmar Pedido</h3>
+      <p class="auth-form__subtitle">Revise os detalhes para enviar o pedido diretamente ao produtor.</p>
+
+      <form id="checkoutForm" class="auth-form">
+        <!-- Resumo do total -->
+        <div class="checkout-total-card">
+          <span>Total a pagar:</span>
+          <strong id="checkoutTotalDisplay">R$ 0,00</strong>
+        </div>
+
+        <!-- Modalidade -->
+        <div class="form-group">
+          <label><strong>Modalidade de Entrega:</strong></label>
+          <div class="radio-cards">
+            <label class="radio-card active">
+              <input type="radio" name="modalidade" value="RETIRADA" checked />
+              <div>
+                <strong>Retirada com o produtor</strong>
+                <span>Você retira diretamente na propriedade (Sem taxa)</span>
+              </div>
+            </label>
+            <label class="radio-card">
+              <input type="radio" name="modalidade" value="ENTREGA" />
+              <div>
+                <strong>Entrega em domicílio</strong>
+                <span>Entregador parceiro leva até seu endereço</span>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Campo de Endereço (condicional para Entrega) -->
+        <div class="form-group" id="enderecoGroup" style="display: none;">
+          <label for="enderecoSelect"><strong>Endereço de entrega:</strong></label>
+          <select id="enderecoSelect" class="form-select">
+            <option value="">Carregando endereços...</option>
+          </select>
+          <p class="form-help">Caso não tenha endereço cadastrado, crie um no painel ou selecione retirada.</p>
+        </div>
+
+        <!-- Forma de Pagamento -->
+        <div class="form-group">
+          <label><strong>Forma de Pagamento:</strong></label>
+          <div class="payment-options">
+            <label class="payment-option active">
+              <input type="radio" name="forma_pagamento" value="PIX" checked />
+              <span>⚡ Pix</span>
+            </label>
+            <label class="payment-option">
+              <input type="radio" name="forma_pagamento" value="CARTAO" />
+              <span>💳 Cartão</span>
+            </label>
+            <label class="payment-option">
+              <input type="radio" name="forma_pagamento" value="DINHEIRO" />
+              <span>💵 Dinheiro</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Observações -->
+        <div class="form-group">
+          <label for="checkoutObs">Observações para o produtor (opcional):</label>
+          <input type="text" id="checkoutObs" placeholder="Ex: Embalar com cuidado, retirar após as 14h..." class="form-input" />
+        </div>
+
+        <div id="checkoutError" class="auth-error" style="display: none;"></div>
+
+        <button type="submit" class="btn btn--cta btn--full btn--lg" id="btnConfirmOrder">
+          Confirmar e Enviar Pedido
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Container de Toasts flutuantes -->
+  <div id="toastContainer" class="toast-container" aria-live="polite"></div>
+
+  <script src="main.js"></script>
+</body>
+</html>

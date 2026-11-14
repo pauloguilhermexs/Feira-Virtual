@@ -16,14 +16,14 @@ class ProdutoPublicoSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Produto
-        fields = ["id", "nome", "descricao", "preco", "unidade_medida", "estoque", "tipo_producao",
+        fields = ["id", "nome", "descricao", "preco", "unidade_medida", "estoque", "tipo_producao", "imagem",
                   "categoria", "categoria_nome", "produtor", "produtor_nome", "nota_media"]
 
 
 class ProdutoProdutorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Produto
-        fields = ["id", "nome", "descricao", "preco", "unidade_medida", "estoque", "tipo_producao",
+        fields = ["id", "nome", "descricao", "preco", "unidade_medida", "estoque", "tipo_producao", "imagem",
                   "categoria", "ativo", "criado_em"]
         read_only_fields = ["criado_em"]
 

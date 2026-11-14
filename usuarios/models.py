@@ -36,6 +36,7 @@ class PerfilProdutor(models.Model):
     endereco_propriedade = models.CharField(max_length=255, blank=True)
     cidade = models.CharField(max_length=100, blank=True)
     estado = models.CharField(max_length=2, blank=True)
+    foto_propriedade = models.ImageField(upload_to="propriedades/%Y/%m/", blank=True, null=True)
     # Formas de recebimento
     chave_pix = models.CharField(max_length=140, blank=True)
     possui_maquininha = models.BooleanField(default=False)
