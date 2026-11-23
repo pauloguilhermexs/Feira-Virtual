@@ -26,7 +26,28 @@
   <a href="https://github.com/pauloguilhermexs/Feira-Virtual/actions/workflows/ci.yml"><img src="https://github.com/pauloguilhermexs/Feira-Virtual/actions/workflows/ci.yml/badge.svg?branch=dev" alt="CI — Feira Virtual" /></a>
 </p>
 
-**Sumário:** [1. Princípios](#1-princípios-de-projeto-e-engenharia-de-software) · [2. Proposta, Motivação e ODS](#2-apresentação-motivação-e-ods) · [3. Padrões de Projeto](#3-padrões-de-projeto-aplicados) · [4. Critérios de Avaliação](#4-critérios-de-avaliação-e-evidências) ([4.1 Docker](#41-projeto-conteinerizado) · [4.2 API](#42-api-com-os-principais-requisitos) · [4.3 Auth](#43-autenticação-e-autorização) · [4.4 Testes/CI](#44-ci-e-testes) · [4.5 Front-End](#45-front-end-e-demonstração)) · [5. Arquitetura, Tecnologias e Diretórios](#5-arquitetura-tecnologias-e-diretórios) · [6. Execução Local e Variáveis](#6-execução-local-sem-docker-e-variáveis) · [7. Considerações Finais](#7-considerações-finais)
+**Sumário:** <br>
+* [1. Princípios](#1-princípios-de-projeto-e-engenharia-de-software)
+
+* [2. Proposta, Motivação e ODS](#2-apresentação-motivação-e-ods) 
+
+* [3. Padrões de Projeto](#3-padrões-de-projeto-aplicados) 
+
+* [4. Critérios de Avaliação](#4-critérios-de-avaliação-e-evidências)
+  * [4.1 Docker](#41-projeto-conteinerizado) 
+  
+  * [4.2 API](#42-api-com-os-principais-requisitos) 
+  
+  * [4.3 Auth](#43-autenticação-e-autorização)
+  
+  * [4.4 Testes/CI](#44-ci-e-testes) 
+  
+  * [4.5 Front-End](#45-front-end-e-demonstração)
+* [5. Arquitetura, Tecnologias e Diretórios](#5-arquitetura-tecnologias-e-diretórios) 
+
+* [6. Execução Local e Variáveis](#6-execução-local-sem-docker-e-variáveis) 
+
+* [7. Considerações Finais](#7-considerações-finais)
 
 ---
 
