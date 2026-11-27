@@ -22,7 +22,7 @@
   <img src="https://img.shields.io/badge/Auth-SimpleJWT-000000?style=flat&logo=jsonwebtokens&logoColor=white" alt="SimpleJWT" />
   <img src="https://img.shields.io/badge/Banco-MySQL%208.4%20%7C%20SQLite-4479A1?style=flat&logo=mysql&logoColor=white" alt="MySQL 8.4 e SQLite" />
   <img src="https://img.shields.io/badge/Docker-Compose-2496ED?style=flat&logo=docker&logoColor=white" alt="Docker Compose" />
-  <img src="https://img.shields.io/badge/Testes-42%20aprovados-246F11?style=flat" alt="42 testes aprovados" />
+  <img src="https://img.shields.io/badge/Testes-104%20aprovados-246F11?style=flat" alt="104 testes aprovados" />
   <a href="https://github.com/pauloguilhermexs/Feira-Virtual/actions/workflows/ci.yml"><img src="https://github.com/pauloguilhermexs/Feira-Virtual/actions/workflows/ci.yml/badge.svg?branch=dev" alt="CI — Feira Virtual" /></a>
 </p>
 
@@ -37,9 +37,9 @@
 | **Modularidade** | Fronteiras claras entre subdomínios. | 5 apps Django (`usuarios`, `catalogo`, `pedidos`, `avaliacoes`, `painel`) + `config` e 10 ES Modules (`frontend/`). |
 | **Separação de responsabilidades** | Isola HTTP, validação e regras de negócio. | Views (`*/views.py`), serializers (`*/serializers.py`) e camada transacional em [`pedidos/services.py`](pedidos/services.py). |
 | **Baixo acoplamento** | Facilita troca de provedores sem alterar o núcleo. | Contratos abstratos em `pedidos/pix.py` e `pedidos/notificacoes.py`; UI desacoplada via `/api/` (`api.js`). |
-| **Alta coesão** | Agrupa modelos, rotas e testes do mesmo domínio. | Cada app concentra seus próprios `models.py`, `serializers.py`, `views.py`, `urls.py` e `tests.py`. |
+| **Alta coesão** | Agrupa modelos, rotas e testes do mesmo domínio. | Cada app concentra seus próprios `models.py`, `serializers.py`, `views.py`, `urls.py`, `test_unit.py` e `tests.py`. |
 | **Reutilização de código** | Evita duplicação com abstrações comuns. | Base `_PorTipo` (`usuarios/permissions.py`), `mudar_status()` (`services.py`), `apiFetch()` e `renderIcon()` (`frontend/js/`). |
-| **Manutenibilidade** | Reduz risco de regressão em evoluções. | 42 testes automatizados, logs estruturados, `LogAuditoria` (`painel/models.py`) e histórico Git semântico. |
+| **Manutenibilidade** | Reduz risco de regressão em evoluções. | 104 testes automatizados (62 de unidade + 42 de integração), logs estruturados, `LogAuditoria` (`painel/models.py`) e histórico Git semântico. |
 | **Segurança** | Protege dados e operações conforme o perfil. | RBAC + filtro anti-IDOR, CSP (`config/middleware.py`), anti-*Path Traversal* (`config/urls.py`), throttles, Pillow e LGPD. |
 | **Escalabilidade** | Suporta crescimento de dados e tráfego. | Paginação (`PAGE_SIZE = 20`), índices, `select_related`/`prefetch_related`, Gunicorn, WhiteNoise e MySQL 8.4 *(mídia em `/media/` exigiria S3/R2 em múltiplas réplicas)*. |
 
@@ -112,16 +112,39 @@ API REST em **Django REST Framework** (JSON / `multipart` validado com Pillow, `
 
 ### 4.4. CI e Testes
 
-**42 testes automatizados aprovados** (cobertura medida de **87%** via `coverage`): [`usuarios/tests.py`](usuarios/tests.py) (**10**), [`catalogo/tests.py`](catalogo/tests.py) (**9**), [`pedidos/tests.py`](pedidos/tests.py) (**13**), [`avaliacoes/tests.py`](avaliacoes/tests.py) (**4**) e [`painel/tests.py`](painel/tests.py) (**6**). Cobrem cadastros, RBAC, anti-IDOR, estoque transacional, Pix HMAC, entregas, avaliações recíprocas, LGPD, moderação, CSP e anti-*Path Traversal*.  
-**CI ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)):** pipeline no **GitHub Actions** disparada em `push`, `pull_request` (`main` e `dev`) e `workflow_dispatch`, composta por três jobs:
-- **`backend-tests` (Python 3.12):** instala dependências, executa `manage.py check`, `makemigrations --check --dry-run`, `spectacular --validate`, `check --deploy` e os 42 testes com relatório de cobertura (`coverage`).
-- **`frontend-lint` (Node.js 22):** executa **ESLint** (`npm run lint:js`) nos ES Modules (`frontend/main.js` e `frontend/js/*.js`) e **Prettier** (`npm run format:check`) em JS e CSS.
-- **`docker-build`:** valida a sintaxe de `docker compose config --quiet` e o build completo da imagem `Dockerfile`.
+A suíte reúne **104 testes automatizados aprovados** (**92%** de cobertura medida via `coverage`), separados em **Testes de Unidade (62)** e **Testes de Integração (42)**.
+
+#### Testes de Unidade (62 testes — `*/test_unit.py`)
+
+**Como foram feitos:** escritos com `SimpleTestCase` (sem banco de dados para funções puras, permissões e mocks) e `TestCase`, utilizando **`APIRequestFactory`** do Django REST Framework, chamadas diretas a **serializers**, **permissões**, **validadores**, **middleware** e **funções de serviço**, além de `unittest.mock` e `override_settings` para isolar banco, e-mail, logs e variáveis de ambiente.
+
+| Módulo | Qtd. | O que os testes se propõem a verificar |
+|---|---|---|
+| [`config/test_unit.py`](config/test_unit.py) | 12 | `validar_imagem_upload()` (tamanho > 5 MB, extensões proibidas, binário corrompido via Pillow e reset de ponteiro), `ContentSecurityPolicyMiddleware` (CSP padrão, Swagger e preservação de header existente) e views auxiliares (`health_view` 200/503, sanitização de frete negativo em `config_publica_view` e bloqueio de *path traversal* em assets/mídia). |
+| [`usuarios/test_unit.py`](usuarios/test_unit.py) | 11 | Matriz completa de permissões RBAC DRF (`EhCliente`, `EhProdutor`, `EhEntregador`, `EhAdmin`, `AdminEscreveTodosLeem` para métodos seguros/escrita e anônimos), `_obter_ip()` (`X-Forwarded-For` vs. `REMOTE_ADDR`), `Endereco.como_texto()`, `Usuario.save()` (superuser força `ADMIN`) e proteção `read_only`/força de senha/criação atômica nos serializers de usuário e registro. |
+| [`catalogo/test_unit.py`](catalogo/test_unit.py) | 6 | `ProdutorPublicoSerializer` (`get_cidade_uf()`, `get_aceita_pix()` e não exposição de `chave_pix`), `ProdutoProdutorSerializer` (`validate_categoria()` inativa, `validate_imagem()` e proteção `read_only` de `oculto_moderacao`) e `full_clean()` de `Produto` (preço mínimo e estoque não negativo). |
+| [`pedidos/test_unit.py`](pedidos/test_unit.py) | 24 | `gerar_numero_publico()`, `total_com_frete`, subtotais decimais, `_resumir_endereco_entregador()`, regras LGPD de `PedidoSerializer` (`get_chave_pix()`, mascaramento para entregador, `get_local_retirada()`, `get_concluido_em()`, `get_avaliacoes_feitas()`), validações de `ItemCarrinhoSerializer`/`CheckoutSerializer`, regras da camada de serviço (`validar_pagamento()`, `finalizar_carrinho()` com snapshot/taxa negativa e `mudar_status()` com máquina de estados, papéis e estoque), `MockPixGateway` (BR Code e HMAC-SHA256) e `CentralNotificacoes` (e-mail, WhatsApp mock e isolamento de falhas entre provedores). |
+| [`avaliacoes/test_unit.py`](avaliacoes/test_unit.py) | 5 | `AvaliacaoSerializer` (tipo produto/produtor, trava `read_only` na edição, regra `produto` XOR `produtor`, faixa 1–5, vínculo automático a pedido concluído elegível e rejeição de item/produtor alheio), titularidade em `ReclamacaoSerializer` e validações de produtor/status/duplicidade em `AvaliacaoClienteSerializer`. |
+| [`painel/test_unit.py`](painel/test_unit.py) | 4 | Formatação de `LogAuditoria.__str__()`, `registrar_auditoria()` (extração de IP com proxy/direto e truncamento em 255 caracteres) e contrato de campos `read_only` em `ProdutoAdminSerializer` e `ProdutorAdminSerializer`. |
+
+#### Testes de Integração (42 testes — `*/tests.py`)
+
+**Como foram feitos:** escritos com **`APITestCase`** do Django REST Framework, executando requisições HTTP completas (JSON e `multipart`, com autenticação JWT) sobre rotas reais, views, permissões, middlewares e banco relacional em memória.
+
+| Módulo | Qtd. | O que os testes se propõem a verificar |
+|---|---|---|
+| [`usuarios/tests.py`](usuarios/tests.py) | 10 | Fluxos de cadastro (cliente/produtor pendente e upload de foto da propriedade), leitura/edição de perfil, CRUD de endereços, exportação e exclusão/anonimização LGPD (com auditoria e revogação de tokens), proteção de logout contra terceiros, bloqueio de *path traversal* em `/assets/`, `/api/config/` e link de recuperação de senha. |
+| [`catalogo/tests.py`](catalogo/tests.py) | 9 | Permissões de categorias, proteção contra exclusão de categoria com produtos, visibilidade pública vs. admin, vitrine de produtores (`aceita_pix` sem expor chave), busca e filtros do catálogo, isolamento anti-IDOR na edição de produtos, `/api/estatisticas/`, CSP + `/api/health/` e bloqueio de upload de imagem inválida. |
+| [`pedidos/tests.py`](pedidos/tests.py) | 13 | Jornada completa compra → entrega → avaliação → KPIs, devolução de estoque no cancelamento, logout + redefinição de senha por e-mail, divisão automática do carrinho por produtor, cobrança Pix + webhook HMAC (incluindo rejeição de segredo padrão em produção), frete definido no servidor, recusa com motivo, regras de PATCH/unidades no carrinho, mascaramento e ciclo completo de entregas, isolamento do painel do produtor e bloqueio de categoria inativa. |
+| [`avaliacoes/tests.py`](avaliacoes/tests.py) | 4 | Avaliação restrita a pedidos concluídos sem duplicidade, isolamento de reclamações entre clientes, avaliação recíproca do produtor ao cliente (imutável e sem duplicata) e histórico/edição/exclusão restritos ao autor com recálculo público de médias. |
+| [`painel/tests.py`](painel/tests.py) | 6 | Bloqueio de acesso administrativo para não-admins, bloqueio/reativação de usuários com `LogAuditoria`, aprovação/suspensão de produtores, ocultação/reexibição de produtos imune a reversão pelo produtor, moderação auditada de reclamações e exclusão física vs. *soft delete* preservando integridade referencial de pedidos e avaliações. |
+
+**CI ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)):** pipeline no **GitHub Actions** (`push`, `pull_request` em `main`/`dev` e `workflow_dispatch`) com três jobs: **`backend-tests`** (Python 3.12: `check`, `makemigrations --check --dry-run`, `spectacular --validate`, `check --deploy` e os 104 testes com `coverage`), **`frontend-lint`** (Node.js 22: ESLint e Prettier em JS/CSS) e **`docker-build`** (`docker compose config --quiet` + build do `Dockerfile`).
 
 ```bash
-python manage.py check && python manage.py makemigrations --check --dry-run
-python manage.py test -v 2
-python manage.py spectacular --validate --file /tmp/schema.yml
+python manage.py test config.test_unit usuarios.test_unit catalogo.test_unit pedidos.test_unit avaliacoes.test_unit painel.test_unit -v 2  # apenas unidade (62)
+python manage.py test -v 2                                                                                                                   # suíte completa (104)
+python manage.py check && python manage.py makemigrations --check --dry-run && python manage.py spectacular --validate --file /tmp/schema.yml
 DJANGO_DEBUG=0 DJANGO_SECRET_KEY='<chave-50+-caracteres>' DJANGO_ALLOWED_HOSTS=localhost SECURE_SSL_REDIRECT=1 python manage.py check --deploy
 ```
 
@@ -207,6 +230,6 @@ python manage.py migrate && python manage.py seed_demo && python manage.py runse
 
 ## 7. Considerações Finais
 
-A **Feira Virtual** consolida modelagem relacional, arquitetura modular, padrões de projeto verificáveis no código, RBAC + LGPD, compatibilidade SQLite/MySQL 8.4, containerização e 42 testes automatizados para a disciplina **Engenharia de Software (DCA3603)** em alinhamento aos ODS 2, 8 e 12.
+A **Feira Virtual** consolida modelagem relacional, arquitetura modular, padrões de projeto verificáveis no código, RBAC + LGPD, compatibilidade SQLite/MySQL 8.4, containerização e 104 testes automatizados (62 de unidade e 42 de integração) para a disciplina **Engenharia de Software (DCA3603)** em alinhamento aos ODS 2, 8 e 12.
 
 **Trabalhos futuros (evoluções além do escopo da disciplina):** (1) migração de JWT para cookies `HttpOnly` com `ROTATE_REFRESH_TOKENS = True`; (2) integração com gateways reais de Pix e WhatsApp em produção; e (3) testes E2E automatizados de navegador (Playwright/Cypress).
