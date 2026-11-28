@@ -1,0 +1,1625 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Feira Virtual — Do Campo à sua Mesa</title>
+
+  <!-- SEO & Open Graph -->
+  <meta name="description"
+    content="Plataforma de venda direta da agricultura familiar. Produtos frescos direto de quem planta, sem atravessadores." />
+  <meta name="theme-color" content="#246F11" />
+  <meta property="og:title" content="Feira Virtual — Venda Direta da Agricultura Familiar" />
+  <meta property="og:description"
+    content="Produtos frescos diretamente dos produtores rurais da sua região. Sem intermediários, preço justo." />
+  <meta property="og:image" content="{% static 'assets/og-image.png' %}" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="pt_BR" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Feira Virtual — Venda Direta" />
+  <meta name="twitter:description" content="Produtos frescos direto de quem planta, sem atravessadores." />
+  <meta name="twitter:image" content="{% static 'assets/og-image.png' %}" />
+
+  <!-- Favicons & PWA -->
+  <link rel="icon" type="image/x-icon" href="{% static 'assets/favicon.ico' %}" />
+  <link rel="icon" type="image/png" sizes="32x32" href="{% static 'assets/favicon-32.png' %}" />
+  <link rel="apple-touch-icon" sizes="180x180" href="{% static 'assets/apple-touch-icon.png' %}" />
+  <link rel="manifest" href="{% static 'assets/manifest.webmanifest' %}" />
+
+  <!-- Estilos (servido pelo WhiteNoise com cache imutável, sem requisições externas) -->
+  <link rel="stylesheet" href="{% static 'style.css' %}?v=20261121b" />
+</head>
+
+<body>
+
+  <!-- Barra de carregamento global -->
+  <div id="globalLoadingBar" class="loading-bar" aria-hidden="true"></div>
+
+  <!-- ===================== NAVBAR ===================== -->
+  <header class="navbar" id="navbar">
+    <div class="navbar__inner container">
+
+      <!-- Logo responsiva em WebP + fallback PNG + variante Dark Mode -->
+      <a href="#" class="navbar__logo" aria-label="Feira Virtual - Página inicial">
+        <picture class="navbar__logo-img--light">
+          <source
+            srcset="{% static 'assets/logo-horizontal.webp' %} 1x, {% static 'assets/logo-horizontal-2x.webp' %} 2x"
+            type="image/webp" />
+          <img src="{% static 'assets/logo-horizontal.png' %}" alt="Feira Virtual — Venda Direta"
+            class="navbar__logo-img" width="160" height="70" />
+        </picture>
+        <picture class="navbar__logo-img--dark">
+          <source
+            srcset="{% static 'assets/logo-horizontal-white.webp' %} 1x, {% static 'assets/logo-horizontal-white-2x.webp' %} 2x"
+            type="image/webp" />
+          <img src="{% static 'assets/logo-horizontal-white.png' %}" alt="Feira Virtual — Venda Direta"
+            class="navbar__logo-img" width="160" height="70" />
+        </picture>
+      </a>
+
+      <!-- Nav Links (desktop) -->
+      <nav class="navbar__nav" aria-label="Navegação principal">
+        <ul class="navbar__links" id="navbarLinksDesktop" role="list">
+          <li><a href="#produtos" class="navbar__link">Produtos</a></li>
+          <li><a href="#produtores" class="navbar__link">Produtores</a></li>
+          <li><a href="#como-funciona" class="navbar__link">Como funciona</a></li>
+        </ul>
+      </nav>
+
+      <!-- Ações direita -->
+      <div class="navbar__actions">
+
+        <!-- Toggle Dark Mode -->
+        <button type="button" class="btn-icon" id="themeToggle" aria-label="Alternar modo escuro" title="Alternar tema">
+          <svg class="icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="5" />
+            <line x1="12" y1="1" x2="12" y2="3" />
+            <line x1="12" y1="21" x2="12" y2="23" />
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+            <line x1="1" y1="12" x2="3" y2="12" />
+            <line x1="21" y1="12" x2="23" y2="12" />
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+          </svg>
+          <svg class="icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+          </svg>
+        </button>
+
+        <!-- Carrinho -->
+        <button type="button" class="btn-icon btn-icon--cart" id="btnOpenCart" aria-label="Ver carrinho">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="9" cy="21" r="1" />
+            <circle cx="20" cy="21" r="1" />
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+          </svg>
+          <span class="cart-badge" id="cartBadge" aria-hidden="true" style="display: none;">0</span>
+        </button>
+
+        <!-- Área de Autenticação Dinâmica -->
+        <div id="navAuthArea" class="navbar__auth-area">
+          <button type="button" class="btn btn--outline btn--sm" id="btnOpenLogin">Entrar</button>
+          <button type="button" class="btn btn--primary btn--sm" id="btnOpenRegister">Cadastrar</button>
+        </div>
+
+        <!-- Hamburguer (mobile) -->
+        <button type="button" class="navbar__hamburger" id="hamburger" aria-label="Abrir menu" aria-expanded="false"
+          aria-controls="mobileMenu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Menu Mobile -->
+    <div class="navbar__mobile" id="mobileMenu" aria-hidden="true">
+      <nav aria-label="Menu mobile">
+        <ul role="list" id="navbarLinksMobile">
+          <li><a href="#produtos" class="navbar__link">Produtos</a></li>
+          <li><a href="#produtores" class="navbar__link">Produtores</a></li>
+          <li><a href="#como-funciona" class="navbar__link">Como funciona</a></li>
+        </ul>
+        <div class="navbar__mobile-actions" id="mobileAuthArea">
+          <button type="button" class="btn btn--outline btn--full" id="btnMobileLogin">Entrar</button>
+          <button type="button" class="btn btn--primary btn--full" id="btnMobileRegister">Cadastrar</button>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ===================== VITRINE PÚBLICA (COMPRADOR / VISITANTE / ADMIN) ===================== -->
+  <main id="publicStorefront">
+    <div id="adminStorefrontBar" class="admin-preview-bar" style="display: none;">
+      <div class="container admin-preview-bar__inner">
+        <span class="admin-preview-bar__text">
+          <svg class="icon" width="18" height="18" aria-hidden="true"><use href="{% static 'assets/icons.svg' %}#icon-shield"></use></svg>
+          Visualizando a vitrine pública como Administrador
+        </span>
+        <button type="button" class="btn btn--primary btn--sm" id="btnBackToAdminWorkspace">
+          <svg class="icon" width="16" height="16" aria-hidden="true"><use href="{% static 'assets/icons.svg' %}#icon-arrow-left"></use></svg>
+          Voltar ao Painel Administrativo
+        </button>
+      </div>
+    </div>
+
+    <section class="hero" id="heroSection" aria-labelledby="hero-title">
+      <div class="hero__bg-shapes" aria-hidden="true">
+        <div class="hero__shape hero__shape--1"></div>
+        <div class="hero__shape hero__shape--2"></div>
+        <div class="hero__shape hero__shape--3"></div>
+      </div>
+
+      <div class="hero__inner container">
+        <div class="hero__content">
+          <div class="hero__eyebrow" aria-label="Destaque">
+            <span class="badge hero__badge">Agricultura Familiar</span>
+            <span class="badge hero__badge">Direto do produtor</span>
+          </div>
+
+          <h1 class="hero__title" id="hero-title">
+            Produtos frescos,<br />
+            <em>direto de quem planta</em><br />
+            até você.
+          </h1>
+
+          <p class="hero__subtitle">
+            Conectamos produtores rurais, entregadores parceiros e compradores em uma
+            feira digital segura, acolhedora e transparente. Sem atravessadores.
+          </p>
+
+          <div class="hero__ctas">
+            <a href="#produtos" class="btn btn--cta btn--lg">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="9" cy="21" r="1" />
+                <circle cx="20" cy="21" r="1" />
+                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+              </svg>
+              Ver produtos disponíveis
+            </a>
+            <a href="#produtores" class="btn btn--ghost btn--lg">
+              Conhecer produtores
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <line x1="5" y1="12" x2="19" y2="12" />
+                <polyline points="12 5 19 12 12 19" />
+              </svg>
+            </a>
+          </div>
+        </div>
+
+        <div class="hero__visual">
+          <div class="product-card-hero">
+            <div class="product-card-hero__header" id="heroProductHeader">
+              <div class="product-card-hero__img product-card-hero__img--logo">
+                <picture class="brand-logo-picture brand-logo-picture--light">
+                  <source
+                    srcset="{% static 'assets/logo-horizontal.webp' %} 1x, {% static 'assets/logo-horizontal-2x.webp' %} 2x"
+                    type="image/webp" />
+                  <img src="{% static 'assets/logo-horizontal.png' %}" alt="Feira Virtual"
+                    class="brand-logo-img product-card__img--default" width="160" height="70" />
+                </picture>
+                <picture class="brand-logo-picture brand-logo-picture--dark">
+                  <source
+                    srcset="{% static 'assets/logo-horizontal-white.webp' %} 1x, {% static 'assets/logo-horizontal-white-2x.webp' %} 2x"
+                    type="image/webp" />
+                  <img src="{% static 'assets/logo-horizontal-white.png' %}" alt="Feira Virtual"
+                    class="brand-logo-img product-card__img--default" width="160" height="70" />
+                </picture>
+              </div>
+            </div>
+            <div class="product-card-hero__body">
+              <div class="product-card-hero__meta-row" id="heroProductMetaRow">
+                <span class="product-card-hero__category">Hortaliças · Orgânico</span>
+              </div>
+              <h3 class="product-card-hero__name">Alface Crespa</h3>
+              <p class="product-card-hero__producer">
+                <svg class="icon" width="14" height="14" aria-hidden="true"><use href="{% static 'assets/icons.svg' %}#icon-map-pin"></use></svg>
+                Sítio Esperança
+              </p>
+              <div class="product-card-hero__footer">
+                <div class="product-card-hero__price">
+                  <span class="price-unit">R$ 2,50</span>
+                  <span class="price-label">/ maço</span>
+                </div>
+                <a href="#produtos" class="btn btn--cta btn--sm">Comprar</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="stats-card-hero stats-card-hero--top">
+            <strong>Produtores locais</strong>
+            <span>Agricultura 100% familiar</span>
+          </div>
+
+          <div class="stats-card-hero stats-card-hero--bottom">
+            <strong>Venda Direta</strong>
+            <span>Sem atravessadores</span>
+          </div>
+
+          <div class="hero__deco-circle hero__deco-circle--1" aria-hidden="true"></div>
+          <div class="hero__deco-circle hero__deco-circle--2" aria-hidden="true"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== TRUST BAR ===================== -->
+    <section class="trust-bar" id="trustBarSection" aria-label="Diferenciais">
+      <div class="container">
+        <ul class="trust-bar__list" role="list">
+          <li class="trust-bar__item">
+            <span class="trust-bar__icon" aria-hidden="true">
+              <svg class="icon" width="20" height="20"><use href="{% static 'assets/icons.svg' %}#icon-sprout"></use></svg>
+            </span>
+            <div>
+              <strong>Produto fresco</strong>
+              <span>Colhido e enviado</span>
+            </div>
+          </li>
+          <li class="trust-bar__item">
+            <span class="trust-bar__icon" aria-hidden="true">
+              <svg class="icon" width="20" height="20"><use href="{% static 'assets/icons.svg' %}#icon-lock"></use></svg>
+            </span>
+            <div>
+              <strong>Pagamento seguro</strong>
+              <span>Pix, Cartão ou Dinheiro</span>
+            </div>
+          </li>
+          <li class="trust-bar__item">
+            <span class="trust-bar__icon" aria-hidden="true">
+              <svg class="icon" width="20" height="20"><use href="{% static 'assets/icons.svg' %}#icon-handshake"></use></svg>
+            </span>
+            <div>
+              <strong>Direto do produtor</strong>
+              <span>Preço justo para quem planta e consome</span>
+            </div>
+          </li>
+          <li class="trust-bar__item">
+            <span class="trust-bar__icon" aria-hidden="true">
+              <svg class="icon" width="20" height="20"><use href="{% static 'assets/icons.svg' %}#icon-map-pin"></use></svg>
+            </span>
+            <div>
+              <strong>Entregas locais</strong>
+              <span>Retirada ou entrega em domicílio</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ===================== BANNER DE BOAS-VINDAS (CLIENTE AUTENTICADO) ===================== -->
+    <section id="clientWelcomeBanner" class="client-welcome" style="display: none;" aria-label="Resumo da sua conta"></section>
+
+    <!-- ===================== CATÁLOGO DE PRODUTOS DINÂMICO ===================== -->
+    <section class="section-catalog" id="produtos">
+      <div class="container">
+        <div class="section-header">
+          <span class="badge badge--success">Feira Aberta</span>
+          <h2 class="section-title">Produtos Frescos da Semana</h2>
+          <p class="section-subtitle">Itens colhidos diretamente pelos produtores parceiros. Clique em qualquer produto
+            para ver avaliações e detalhes.</p>
+        </div>
+
+        <div class="catalog-controls">
+          <div class="search-box">
+            <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2" aria-hidden="true">
+              <circle cx="11" cy="11" r="8" />
+              <line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
+            <input type="text" id="searchInput" placeholder="Buscar por alface, tomate, cenoura..."
+              aria-label="Buscar produtos" />
+            <button type="button" id="btnClearSearch" class="btn-clear" style="display: none;" title="Limpar busca"
+              aria-label="Limpar busca">✕</button>
+          </div>
+
+          <div class="select-filters">
+            <select id="tipoProducaoSelect" class="form-select" aria-label="Filtrar por tipo de produção">
+              <option value="">Todos os cultivos</option>
+              <option value="ORGANICO_CERTIFICADO">Orgânico Certificado</option>
+              <option value="AGROECOLOGICO">Agroecológico</option>
+              <option value="CONVENCIONAL">Convencional</option>
+            </select>
+
+            <select id="orderingSelect" class="form-select" aria-label="Ordenar produtos">
+              <option value="nome">Nome (A-Z)</option>
+              <option value="preco">Menor Preço</option>
+              <option value="-preco">Maior Preço</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="category-pills" id="categoryPills" role="tablist" aria-label="Categorias">
+          <button type="button" class="pill active" data-category="" role="tab" aria-selected="true">Todas as
+            categorias</button>
+        </div>
+
+        <div id="activeProducerFilter"></div>
+
+        <div class="products-grid" id="productsGrid" aria-live="polite">
+          <div class="catalog-loading">
+            <div class="spinner"></div>
+            <p>Carregando feira virtual...</p>
+          </div>
+        </div>
+
+        <div id="paginationControls" class="pagination-wrap"></div>
+      </div>
+    </section>
+
+    <!-- ===================== PRODUTORES EM DESTAQUE ===================== -->
+    <section class="section-producers" id="produtores">
+      <div class="container">
+        <div class="section-header">
+          <span class="badge badge--outline">Quem planta</span>
+          <h2 class="section-title">Nossos Produtores Parceiros</h2>
+          <p class="section-subtitle">Conheça as famílias e propriedades rurais cadastradas na feira.</p>
+        </div>
+
+        <div class="producer-showcase" id="producerShowcase">
+          <div class="catalog-loading">
+            <div class="spinner"></div>
+            <p>Carregando produtores cadastrados...</p>
+          </div>
+        </div>
+        <div id="producersPagination" class="pagination-wrap"></div>
+      </div>
+    </section>
+
+    <!-- ===================== COMO FUNCIONA ===================== -->
+    <section class="section-how" id="como-funciona">
+      <div class="container">
+        <div class="section-header">
+          <span class="badge badge--outline">Passo a passo</span>
+          <h2 class="section-title">Como funciona a Feira</h2>
+        </div>
+
+        <div class="steps-grid">
+          <div class="step-card">
+            <div class="step-card__num">1</div>
+            <h3>Escolha seus produtos</h3>
+            <p>Navegue pelo catálogo e adicione itens frescos de produtores da sua região ao carrinho.</p>
+          </div>
+          <div class="step-card">
+            <div class="step-card__num">2</div>
+            <h3>Finalize o pedido</h3>
+            <p>Selecione entrega em domicílio ou retirada direta na propriedade, e sua forma de pagamento.</p>
+          </div>
+          <div class="step-card">
+            <div class="step-card__num">3</div>
+            <h3>O produtor colhe</h3>
+            <p>O produtor confirma o pedido, separa seus produtos frescos e o estoque é baixado com segurança.</p>
+          </div>
+          <div class="step-card">
+            <div class="step-card__num">4</div>
+            <h3>Receba com carinho</h3>
+            <p>O entregador leva até você ou você retira direto com a família produtora.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===================== PAINEL DEDICADO DO ENTREGADOR ===================== -->
+  <section id="deliveryWorkspace" class="role-workspace" style="display: none;" aria-label="Painel do Entregador">
+    <div class="container">
+      <div class="workspace-header">
+        <div>
+          <span class="badge badge--entregador">Perfil ativo: Entregador</span>
+          <h1 class="workspace-header__title">Painel de Entregas</h1>
+          <p class="workspace-header__subtitle">Aceite oportunidades, acompanhe rotas de retirada e entrega e consulte seus fretes acumulados.</p>
+        </div>
+        <button type="button" class="btn btn--outline btn--sm" id="btnRefreshDelivery">Atualizar painel</button>
+      </div>
+
+      <div class="panel-tabs workspace-tabs" id="deliveryPanelTabs" role="tablist" aria-label="Seções do entregador">
+        <button type="button" class="panel-tab active" data-delivery-tab="visao_geral" role="tab" aria-selected="true">Visão geral</button>
+        <button type="button" class="panel-tab" data-delivery-tab="disponiveis" role="tab" aria-selected="false">Entregas disponíveis</button>
+        <button type="button" class="panel-tab" data-delivery-tab="minhas" role="tab" aria-selected="false">Minhas entregas</button>
+        <button type="button" class="panel-tab" data-delivery-tab="historico" role="tab" aria-selected="false">Histórico</button>
+        <button type="button" class="panel-tab" data-delivery-tab="ganhos" role="tab" aria-selected="false">Ganhos</button>
+        <button type="button" class="panel-tab" data-delivery-tab="veiculo" role="tab" aria-selected="false">Meu veículo</button>
+      </div>
+
+      <div id="deliveryTabVisao_geral" class="workspace-pane">
+        <div id="deliveryOverviewContent"></div>
+      </div>
+
+      <div id="deliveryTabDisponiveis" class="workspace-pane" style="display: none;">
+        <div id="deliveryAvailableList" class="orders-list"></div>
+        <div id="deliveryAvailablePagination" class="pagination-wrap"></div>
+      </div>
+
+      <div id="deliveryTabMinhas" class="workspace-pane" style="display: none;">
+        <div class="filter-pills-row" id="deliveryMineFilters" role="group" aria-label="Filtrar minhas entregas">
+          <button type="button" class="pill active" data-delivery-group="">Todas</button>
+          <button type="button" class="pill" data-delivery-group="aguardando">Aguardando retirada</button>
+          <button type="button" class="pill" data-delivery-group="andamento">Em andamento</button>
+          <button type="button" class="pill" data-delivery-group="concluidas">Concluídas</button>
+          <button type="button" class="pill" data-delivery-group="canceladas">Canceladas</button>
+        </div>
+        <div id="deliveryMineList" class="orders-list"></div>
+        <div id="deliveryMinePagination" class="pagination-wrap"></div>
+      </div>
+
+      <div id="deliveryTabHistorico" class="workspace-pane" style="display: none;">
+        <div id="deliveryHistoryList" class="orders-list"></div>
+        <div id="deliveryHistoryPagination" class="pagination-wrap"></div>
+      </div>
+
+      <div id="deliveryTabGanhos" class="workspace-pane" style="display: none;">
+        <div id="deliveryEarningsContent"></div>
+        <div id="deliveryEarningsPagination" class="pagination-wrap"></div>
+      </div>
+
+      <div id="deliveryTabVeiculo" class="workspace-pane" style="display: none;">
+        <div class="workspace-card" style="max-width: 640px;">
+          <h2 class="workspace-card__title">Dados do Veículo e Região</h2>
+          <form id="deliveryVehicleForm">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="delivVeiculo">Veículo:</label>
+                <input type="text" id="delivVeiculo" class="form-input" placeholder="Ex: Moto 160cc / Utilitário" />
+              </div>
+              <div class="form-group">
+                <label for="delivPlaca">Placa:</label>
+                <input type="text" id="delivPlaca" class="form-input" placeholder="ABC1D23" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="delivArea">Área de atuação:</label>
+              <input type="text" id="delivArea" class="form-input" placeholder="Ex: Zona Sul e Centro" />
+            </div>
+            <div id="deliveryVehicleError" class="auth-error" style="display: none;" role="alert"></div>
+            <button type="submit" class="btn btn--primary">Atualizar Dados do Veículo</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== PAINEL DEDICADO DO PRODUTOR RURAL ===================== -->
+  <section id="producerWorkspace" class="role-workspace" style="display: none;" aria-label="Painel do Produtor Rural">
+    <div class="container">
+      <div class="workspace-header">
+        <div>
+          <div class="workspace-header__badges">
+            <span class="badge badge--produtor">Perfil ativo: Produtor Rural</span>
+            <span id="producerStatusBadge" class="badge badge--outline"></span>
+          </div>
+          <h1 class="workspace-header__title" id="producerWorkspaceTitle">Painel do Produtor Rural</h1>
+          <p class="workspace-header__subtitle">Gerencie seus produtos, atualize os dados da sua propriedade, acompanhe pedidos e avalie seus clientes.</p>
+        </div>
+        <button type="button" class="btn btn--cta btn--sm" id="btnQuickNewProduct">+ Novo Produto</button>
+      </div>
+
+      <div id="producerStatusWarning" class="auth-error" style="display: none;" role="status"></div>
+
+      <div class="panel-tabs workspace-tabs" id="producerPanelTabs" role="tablist" aria-label="Seções do produtor">
+        <button type="button" class="panel-tab active" data-producer-tab="visao_geral" role="tab" aria-selected="true">Visão geral</button>
+        <button type="button" class="panel-tab" data-producer-tab="produtos" role="tab" aria-selected="false">Meus produtos</button>
+        <button type="button" class="panel-tab" data-producer-tab="propriedade" role="tab" aria-selected="false">Minhas propriedades</button>
+        <button type="button" class="panel-tab" data-producer-tab="pedidos" role="tab" aria-selected="false">Pedidos recebidos</button>
+        <button type="button" class="panel-tab" data-producer-tab="avaliacoes" role="tab" aria-selected="false">Avaliações</button>
+      </div>
+
+      <!-- Visão Geral -->
+      <div id="producerTabVisao_geral" class="workspace-pane">
+        <div id="producerOverviewContent"></div>
+      </div>
+
+      <!-- Meus Produtos -->
+      <div id="producerTabProdutos" class="workspace-pane" style="display: none;">
+        <div class="workspace-toolbar">
+          <h2 class="workspace-card__title">Produtos Cadastrados</h2>
+          <button type="button" class="btn btn--cta btn--sm" id="btnNewProducerProduct">+ Novo Produto</button>
+        </div>
+
+        <div id="producerProductFormWrap" class="workspace-card" style="display: none; margin-bottom: var(--space-5);">
+          <h3 id="producerProductFormTitle" class="workspace-card__title" style="margin-bottom: var(--space-4);">Cadastrar / Editar Produto</h3>
+          <div class="workspace-split">
+            <form id="producerProductForm">
+              <input type="hidden" id="prodId" />
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="prodNome">Nome do produto:</label>
+                  <input type="text" id="prodNome" required class="form-input" />
+                </div>
+                <div class="form-group">
+                  <label for="prodCategoria">Categoria:</label>
+                  <select id="prodCategoria" required class="form-input"></select>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="prodPreco">Preço (R$):</label>
+                  <input type="number" step="0.01" min="0.01" id="prodPreco" required class="form-input" />
+                </div>
+                <div class="form-group">
+                  <label for="prodUnidade">Unidade:</label>
+                  <select id="prodUnidade" class="form-input">
+                    <option value="UNIDADE">unidade</option>
+                    <option value="KG">kg</option>
+                    <option value="G">g</option>
+                    <option value="MACO">maço</option>
+                    <option value="CAIXA">caixa</option>
+                    <option value="SACO">saco</option>
+                    <option value="L">L</option>
+                    <option value="ML">ml</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="prodEstoque">Estoque:</label>
+                  <input type="number" step="0.001" min="0" id="prodEstoque" required class="form-input" />
+                </div>
+                <div class="form-group">
+                  <label for="prodTipo">Tipo de cultivo:</label>
+                  <select id="prodTipo" class="form-input">
+                    <option value="CONVENCIONAL" selected>Convencional</option>
+                    <option value="AGROECOLOGICO">Agroecológico</option>
+                    <option value="ORGANICO_CERTIFICADO">Orgânico certificado</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="prodDescricao">Descrição do produto:</label>
+                <textarea id="prodDescricao" rows="3" class="form-input" placeholder="Descreva origem, sabor, forma de colheita ou conservação..."></textarea>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="prodImagem">Foto (JPEG/PNG/WebP até 5MB):</label>
+                  <input type="file" id="prodImagem" accept="image/jpeg,image/png,image/webp" class="form-input" />
+                </div>
+                <div class="form-group" style="display: flex; align-items: center;">
+                  <label><input type="checkbox" id="prodAtivo" checked /> Visível no catálogo</label>
+                </div>
+              </div>
+              <div id="producerProductError" class="auth-error" style="display: none;" role="alert"></div>
+              <div style="display: flex; gap: var(--space-2); flex-wrap: wrap;">
+                <button type="submit" class="btn btn--primary">Salvar Produto</button>
+                <button type="button" class="btn btn--outline" id="btnCancelProducerProduct">Cancelar</button>
+              </div>
+            </form>
+
+            <div class="workspace-preview-col">
+              <span class="workspace-preview-label">Pré-visualização antes de salvar</span>
+              <div id="prodPreviewCard" class="product-card product-card--preview"></div>
+            </div>
+          </div>
+        </div>
+
+        <div id="producerProductsList" class="panel-list"></div>
+        <div id="producerProductsPagination" class="pagination-wrap"></div>
+      </div>
+
+      <!-- Minhas Propriedades -->
+      <div id="producerTabPropriedade" class="workspace-pane" style="display: none;">
+        <div class="workspace-card">
+          <h2 class="workspace-card__title" style="margin-bottom: var(--space-4);">Dados e Apresentação da Propriedade Rural</h2>
+          <div class="workspace-split">
+            <form id="producerPropertyForm">
+              <div class="form-group">
+                <label for="propNome">Nome da propriedade:</label>
+                <input type="text" id="propNome" required class="form-input" />
+              </div>
+              <div class="form-group">
+                <label for="propDescricao">História, apresentação e descrição da produção:</label>
+                <textarea id="propDescricao" rows="4" class="form-input" placeholder="Conte sobre sua família, técnicas de cultivo e o que torna sua produção especial..."></textarea>
+              </div>
+              <div class="form-group">
+                <label for="propEndereco">Endereço da propriedade (usado como local de retirada):</label>
+                <input type="text" id="propEndereco" class="form-input" placeholder="Ex: Estrada Rural km 5, Sítio Boa Vista" />
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="propCidade">Cidade:</label>
+                  <input type="text" id="propCidade" class="form-input" />
+                </div>
+                <div class="form-group">
+                  <label for="propEstado">UF:</label>
+                  <input type="text" id="propEstado" maxlength="2" class="form-input" />
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="propChavePix">Chave Pix:</label>
+                <input type="text" id="propChavePix" class="form-input" />
+              </div>
+              <div class="checkbox-row" style="margin-bottom: var(--space-4);">
+                <label><input type="checkbox" id="propMaquininha" /> Possuo maquininha de cartão</label>
+                <label><input type="checkbox" id="propDinheiro" /> Aceito dinheiro</label>
+              </div>
+              <div class="form-group">
+                <label for="propFoto">Foto da propriedade (JPEG/PNG/WebP até 5MB):</label>
+                <input type="file" id="propFoto" accept="image/jpeg,image/png,image/webp" class="form-input" />
+                <div id="propFotoPreviewWrap" class="property-photo-preview">
+                  <div id="propFotoPreviewSlot" class="property-photo-preview__slot">
+                    <picture class="brand-logo-picture brand-logo-picture--light">
+                      <source
+                        srcset="{% static 'assets/logo-horizontal.webp' %} 1x, {% static 'assets/logo-horizontal-2x.webp' %} 2x"
+                        type="image/webp" />
+                      <img src="{% static 'assets/logo-horizontal.png' %}" alt="Imagem da propriedade"
+                        class="brand-logo-img producer-card__img--default" />
+                    </picture>
+                    <picture class="brand-logo-picture brand-logo-picture--dark">
+                      <source
+                        srcset="{% static 'assets/logo-horizontal-white.webp' %} 1x, {% static 'assets/logo-horizontal-white-2x.webp' %} 2x"
+                        type="image/webp" />
+                      <img src="{% static 'assets/logo-horizontal-white.png' %}" alt="Imagem da propriedade"
+                        class="brand-logo-img producer-card__img--default" />
+                    </picture>
+                  </div>
+                  <span id="propFotoPreviewText" class="text-muted">Usando logo padrão da Feira Virtual (envie uma foto para personalizar sua propriedade).</span>
+                </div>
+              </div>
+              <div id="producerPropertyError" class="auth-error" style="display: none;" role="alert"></div>
+              <button type="submit" class="btn btn--primary btn--full">Salvar Dados da Propriedade</button>
+            </form>
+
+            <div class="workspace-preview-col">
+              <span class="workspace-preview-label">Pré-visualização da propriedade</span>
+              <div id="propPreviewCard" class="producer-card"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pedidos Recebidos e Histórico -->
+      <div id="producerTabPedidos" class="workspace-pane" style="display: none;">
+        <div class="filter-pills-row" id="producerOrderFilters" role="group" aria-label="Filtrar pedidos por status">
+          <button type="button" class="pill active" data-producer-status="">Todos</button>
+          <button type="button" class="pill" data-producer-status="PENDENTE">Pendentes</button>
+          <button type="button" class="pill" data-producer-status="ACEITO">Aceitos</button>
+          <button type="button" class="pill" data-producer-status="EM_PREPARO">Em preparo</button>
+          <button type="button" class="pill" data-producer-status="PRONTO">Prontos</button>
+          <button type="button" class="pill" data-producer-status="EM_ENTREGA">Em entrega</button>
+          <button type="button" class="pill" data-producer-status="CONCLUIDO">Concluídos</button>
+          <button type="button" class="pill" data-producer-status="CANCELADO">Cancelados</button>
+          <button type="button" class="pill" data-producer-status="RECUSADO">Recusados</button>
+        </div>
+        <div id="producerOrdersList" class="orders-list"></div>
+        <div id="producerOrdersPagination" class="pagination-wrap"></div>
+      </div>
+
+      <!-- Avaliações -->
+      <div id="producerTabAvaliacoes" class="workspace-pane" style="display: none;">
+        <div id="producerReviewsContent"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== PAINEL DEDICADO ADMINISTRATIVO ===================== -->
+  <section id="adminWorkspace" class="role-workspace" style="display: none;" aria-label="Painel Administrativo">
+    <div class="container">
+      <div class="workspace-header">
+        <div>
+          <div class="workspace-header__badges">
+            <span class="badge badge--admin">Perfil ativo: Administrador</span>
+          </div>
+          <h1 class="workspace-header__title" id="adminPanelTitle">Painel de Moderação Administrativa</h1>
+          <p class="workspace-header__subtitle">Acompanhe indicadores da feira, aprove produtores, modere produtos, categorias, pedidos, avaliações e usuários.</p>
+        </div>
+        <button type="button" class="btn btn--outline btn--sm" id="btnAdminViewStorefront">
+          <svg class="icon" width="16" height="16" aria-hidden="true"><use href="{% static 'assets/icons.svg' %}#icon-external-link"></use></svg>
+          Ver vitrine pública
+        </button>
+      </div>
+
+      <div class="panel-tabs workspace-tabs" id="adminPanelTabs" role="tablist" aria-label="Seções administrativas">
+        <button type="button" class="panel-tab active" data-admin-tab="indicadores" role="tab" aria-selected="true">Visão geral</button>
+        <button type="button" class="panel-tab" data-admin-tab="produtos" role="tab" aria-selected="false">Produtos</button>
+        <button type="button" class="panel-tab" data-admin-tab="produtores" role="tab" aria-selected="false">Produtores</button>
+        <button type="button" class="panel-tab" data-admin-tab="clientes" role="tab" aria-selected="false">Clientes</button>
+        <button type="button" class="panel-tab" data-admin-tab="categorias" role="tab" aria-selected="false">Categorias</button>
+        <button type="button" class="panel-tab" data-admin-tab="pedidos" role="tab" aria-selected="false">Pedidos</button>
+        <button type="button" class="panel-tab" data-admin-tab="avaliacoes" role="tab" aria-selected="false">Avaliações</button>
+        <button type="button" class="panel-tab" data-admin-tab="reclamacoes" role="tab" aria-selected="false">Reclamações</button>
+        <button type="button" class="panel-tab" data-admin-tab="usuarios" role="tab" aria-selected="false">Usuários</button>
+      </div>
+
+      <div id="adminTabIndicadores" class="workspace-pane">
+        <div id="adminIndicatorsContent"></div>
+      </div>
+
+      <div id="adminTabProdutos" class="workspace-pane" style="display: none;">
+        <div class="admin-filter-bar">
+          <input type="search" id="adminProdSearch" class="form-input" placeholder="Pesquisar produto ou produtor..." aria-label="Pesquisar produto" />
+          <select id="adminProdCatFilter" class="form-select" aria-label="Filtrar por categoria">
+            <option value="">Todas as categorias</option>
+          </select>
+          <select id="adminProdProducerFilter" class="form-select" aria-label="Filtrar por produtor">
+            <option value="">Todos os produtores</option>
+          </select>
+          <select id="adminProdStatusFilter" class="form-select" aria-label="Filtrar por status">
+            <option value="">Todos os status</option>
+            <option value="true">Ativos</option>
+            <option value="false">Ocultos / Inativos</option>
+          </select>
+        </div>
+
+        <div id="adminProductEditWrap" class="demo-box" style="display: none;">
+          <h4 style="margin-bottom: var(--space-3);">Editar Produto</h4>
+          <form id="adminProductEditForm">
+            <input type="hidden" id="adminEditProdId" />
+            <div class="form-row">
+              <div class="form-group">
+                <label for="adminEditProdNome">Nome:</label>
+                <input type="text" id="adminEditProdNome" required class="form-input" />
+              </div>
+              <div class="form-group">
+                <label for="adminEditProdCategoria">Categoria:</label>
+                <select id="adminEditProdCategoria" required class="form-input"></select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="adminEditProdPreco">Preço (R$):</label>
+                <input type="number" id="adminEditProdPreco" step="0.01" min="0.01" required class="form-input" />
+              </div>
+              <div class="form-group">
+                <label for="adminEditProdUnidade">Unidade:</label>
+                <select id="adminEditProdUnidade" class="form-input">
+                  <option value="UNIDADE">unidade</option>
+                  <option value="KG">kg</option>
+                  <option value="G">g</option>
+                  <option value="MACO">maço</option>
+                  <option value="L">L</option>
+                  <option value="ML">ml</option>
+                  <option value="CAIXA">caixa</option>
+                  <option value="SACO">saco</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="adminEditProdEstoque">Estoque:</label>
+                <input type="number" id="adminEditProdEstoque" step="0.001" min="0" required class="form-input" />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="adminEditProdTipo">Tipo de cultivo:</label>
+                <select id="adminEditProdTipo" class="form-input">
+                  <option value="ORGANICO_CERTIFICADO">Orgânico Certificado</option>
+                  <option value="AGROECOLOGICO">Agroecológico</option>
+                  <option value="CONVENCIONAL">Convencional</option>
+                </select>
+              </div>
+              <div class="form-group" style="display: flex; align-items: flex-end; padding-bottom: 8px;">
+                <label><input type="checkbox" id="adminEditProdAtivo" checked /> Produto ativo (visível no catálogo)</label>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="adminEditProdDesc">Descrição:</label>
+              <textarea id="adminEditProdDesc" rows="2" class="form-input"></textarea>
+            </div>
+            <div id="adminProductEditError" class="auth-error" style="display: none;" role="alert"></div>
+            <div style="display: flex; gap: var(--space-2);">
+              <button type="submit" class="btn btn--primary btn--sm">Salvar Alterações</button>
+              <button type="button" class="btn btn--outline btn--sm" id="btnCancelAdminProductEdit">Cancelar</button>
+            </div>
+          </form>
+        </div>
+
+        <div id="adminProductsList" class="panel-list"></div>
+        <div id="adminProductsPagination" class="pagination-wrap"></div>
+      </div>
+
+      <div id="adminTabProdutores" class="workspace-pane" style="display: none;">
+        <div class="admin-filter-bar">
+          <input type="search" id="adminProducerSearch" class="form-input" placeholder="Pesquisar propriedade, cidade, usuário ou e-mail..." aria-label="Pesquisar produtor" />
+          <select id="adminProducerStatusFilter" class="form-select" aria-label="Filtrar produtores por status">
+            <option value="">Todos os status</option>
+            <option value="PENDENTE">Pendentes</option>
+            <option value="APROVADO">Aprovados</option>
+            <option value="SUSPENSO">Suspensos</option>
+          </select>
+        </div>
+        <div id="adminProducersList" class="panel-list"></div>
+        <div id="adminProducersPagination" class="pagination-wrap"></div>
+      </div>
+
+      <div id="adminTabClientes" class="workspace-pane" style="display: none;">
+        <div class="admin-filter-bar">
+          <input type="search" id="adminClientSearch" class="form-input" placeholder="Pesquisar cliente por nome, usuário ou e-mail..." aria-label="Pesquisar cliente" />
+          <select id="adminClientStatusFilter" class="form-select" aria-label="Filtrar clientes por status">
+            <option value="">Todos os status</option>
+            <option value="true">Ativos</option>
+            <option value="false">Inativos / Bloqueados</option>
+          </select>
+        </div>
+        <div id="adminClientsList" class="panel-list"></div>
+        <div id="adminClientsPagination" class="pagination-wrap"></div>
+      </div>
+
+      <div id="adminTabCategorias" class="workspace-pane" style="display: none;">
+        <div style="display: flex; justify-content: flex-end; margin-bottom: var(--space-3);">
+          <button type="button" class="btn btn--cta btn--sm" id="btnNewAdminCategory">+ Nova Categoria</button>
+        </div>
+        <div id="adminCategoryFormWrap" class="demo-box" style="display: none;">
+          <form id="adminCategoryForm">
+            <input type="hidden" id="adminCatId" />
+            <div class="form-group">
+              <label for="adminCatNome">Nome da categoria:</label>
+              <input type="text" id="adminCatNome" required class="form-input" />
+            </div>
+            <div class="form-group">
+              <label for="adminCatDesc">Descrição (opcional):</label>
+              <input type="text" id="adminCatDesc" class="form-input" />
+            </div>
+            <div class="form-group">
+              <label><input type="checkbox" id="adminCatAtiva" checked /> Categoria ativa</label>
+            </div>
+            <div id="adminCategoryError" class="auth-error" style="display: none;" role="alert"></div>
+            <div style="display: flex; gap: var(--space-2);">
+              <button type="submit" class="btn btn--primary btn--sm">Salvar Categoria</button>
+              <button type="button" class="btn btn--outline btn--sm" id="btnCancelAdminCategory">Cancelar</button>
+            </div>
+          </form>
+        </div>
+        <div id="adminCategoriesList" class="panel-list"></div>
+      </div>
+
+      <div id="adminTabPedidos" class="workspace-pane" style="display: none;">
+        <div class="form-group" style="max-width: 280px;">
+          <label for="adminOrderStatusFilter">Filtrar por status:</label>
+          <select id="adminOrderStatusFilter" class="form-select" style="width: 100%; border-radius: var(--radius-md);">
+            <option value="">Todos os status</option>
+            <option value="PENDENTE">Aguardando produtor</option>
+            <option value="ACEITO">Aceito</option>
+            <option value="EM_PREPARO">Em preparo</option>
+            <option value="PRONTO">Pronto</option>
+            <option value="EM_ENTREGA">Saiu para entrega</option>
+            <option value="CONCLUIDO">Concluído</option>
+            <option value="CANCELADO">Cancelado</option>
+            <option value="RECUSADO">Recusado</option>
+          </select>
+        </div>
+        <div id="adminOrdersList" class="panel-list"></div>
+        <div id="adminOrdersPagination" class="pagination-wrap"></div>
+      </div>
+
+      <div id="adminTabAvaliacoes" class="workspace-pane" style="display: none;">
+        <div id="adminReviewsContent"></div>
+        <div id="adminReviewsPagination" class="pagination-wrap"></div>
+        <div id="adminClientReviewsContent" style="margin-top: var(--space-6);"></div>
+        <div id="adminClientReviewsPagination" class="pagination-wrap"></div>
+      </div>
+
+      <div id="adminTabReclamacoes" class="workspace-pane" style="display: none;">
+        <div id="adminComplaintsList" class="orders-list"></div>
+        <div id="adminComplaintsPagination" class="pagination-wrap"></div>
+      </div>
+
+      <div id="adminTabUsuarios" class="workspace-pane" style="display: none;">
+        <div class="admin-filter-bar">
+          <input type="search" id="adminUserSearch" class="form-input" placeholder="Pesquisar usuário por nome, username ou e-mail..." aria-label="Pesquisar usuário" />
+          <select id="adminUserTypeFilter" class="form-select" aria-label="Filtrar usuários por perfil">
+            <option value="">Todos os perfis</option>
+            <option value="CLIENTE">Clientes</option>
+            <option value="PRODUTOR">Produtores</option>
+            <option value="ENTREGADOR">Entregadores</option>
+            <option value="ADMIN">Administradores</option>
+          </select>
+        </div>
+        <div id="adminUsersList" class="panel-list"></div>
+        <div id="adminUsersPagination" class="pagination-wrap"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== FOOTER ===================== -->
+  <footer class="footer">
+    <div class="container footer__inner">
+      <div class="footer__brand">
+        <picture class="footer__logo-img--light">
+          <source
+            srcset="{% static 'assets/logo-horizontal.webp' %} 1x, {% static 'assets/logo-horizontal-2x.webp' %} 2x"
+            type="image/webp" />
+          <img src="{% static 'assets/logo-horizontal.png' %}" alt="Feira Virtual" class="footer__logo-img" height="48"
+            loading="lazy" />
+        </picture>
+        <picture class="footer__logo-img--dark">
+          <source
+            srcset="{% static 'assets/logo-horizontal-white.webp' %} 1x, {% static 'assets/logo-horizontal-white-2x.webp' %} 2x"
+            type="image/webp" />
+          <img src="{% static 'assets/logo-horizontal-white.png' %}" alt="Feira Virtual" class="footer__logo-img"
+            height="48" loading="lazy" />
+        </picture>
+        <p>Plataforma de venda direta da agricultura familiar.</p>
+      </div>
+      <div class="footer__links" id="footerLinks">
+        <a href="#produtos">Catálogo</a>
+        <a href="#produtores">Produtores</a>
+        <a href="#como-funciona">Como funciona</a>
+      </div>
+      <p class="footer__copy">© 2026 Feira Virtual. Todos os direitos reservados.</p>
+    </div>
+  </footer>
+
+  <!-- ===================== DRAWER DO CARRINHO ===================== -->
+  <div class="drawer-overlay" id="cartOverlay"></div>
+  <aside class="cart-drawer" id="cartDrawer" aria-hidden="true" aria-modal="true" role="dialog" aria-labelledby="cartTitle">
+    <div class="cart-drawer__header">
+      <div class="cart-drawer__title-wrap">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          aria-hidden="true">
+          <circle cx="9" cy="21" r="1" />
+          <circle cx="20" cy="21" r="1" />
+          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+        </svg>
+        <h2 id="cartTitle">Meu Carrinho</h2>
+      </div>
+      <button type="button" class="btn-close" id="btnCloseCart" aria-label="Fechar carrinho">✕</button>
+    </div>
+
+    <div class="cart-drawer__body" id="cartItemsList">
+      <div class="cart-empty">
+        <span class="cart-empty__icon" aria-hidden="true">
+          <svg class="icon" width="28" height="28"><use href="{% static 'assets/icons.svg' %}#icon-shopping-basket"></use></svg>
+        </span>
+        <p>Seu carrinho está vazio.</p>
+        <a href="#produtos" class="btn btn--outline btn--sm" id="btnContinueShopping">Explorar produtos</a>
+      </div>
+    </div>
+
+    <div class="cart-drawer__footer" id="cartFooter" style="display: none;">
+      <div class="cart-summary">
+        <span>Total:</span>
+        <strong id="cartTotalVal">R$ 0,00</strong>
+      </div>
+      <button type="button" class="btn btn--cta btn--full btn--lg" id="btnCheckout">Finalizar Pedido</button>
+      <button type="button" class="btn btn--ghost btn--full btn--sm" id="btnClearCart"
+        style="margin-top: var(--space-2);">Limpar carrinho</button>
+    </div>
+  </aside>
+
+  <!-- ===================== MODAL DE AUTENTICAÇÃO ===================== -->
+  <div class="modal-overlay" id="authModalOverlay" aria-hidden="true">
+    <div class="modal-card modal-card--lg" role="dialog" aria-modal="true" aria-labelledby="authModalTitle">
+      <button type="button" class="btn-close modal-close" id="btnCloseAuthModal" aria-label="Fechar janela">✕</button>
+
+      <div class="modal-tabs" role="tablist">
+        <button type="button" class="modal-tab active" id="tabLogin" role="tab" aria-selected="true">Entrar</button>
+        <button type="button" class="modal-tab" id="tabRegister" role="tab" aria-selected="false">Criar Conta</button>
+        <button type="button" class="modal-tab" id="tabRecover" role="tab" aria-selected="false">Recuperar
+          Senha</button>
+      </div>
+
+      <!-- Login -->
+      <form id="loginForm" class="auth-form">
+        <h3 id="authModalTitle" class="auth-form__title">Acessar sua conta</h3>
+        <p class="auth-form__subtitle">Compre, gerencie sua produção ou faça entregas na feira.</p>
+
+        <div class="demo-box" id="demoAccountBox" style="display: none;"></div>
+
+        <div class="form-group">
+          <label for="loginUsername">Nome de usuário:</label>
+          <input type="text" id="loginUsername" required placeholder="Seu usuário" class="form-input"
+            autocomplete="username" />
+        </div>
+
+        <div class="form-group">
+          <label for="loginPassword">Senha:</label>
+          <div class="password-field">
+            <input type="password" id="loginPassword" required placeholder="Sua senha" class="form-input"
+              autocomplete="current-password" />
+            <button type="button" class="password-toggle" data-target="loginPassword" aria-label="Mostrar senha" aria-pressed="false">
+              <svg class="icon" width="18" height="18" aria-hidden="true"><use href="{% static 'assets/icons.svg' %}#icon-eye"></use></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="form-group" style="text-align: right;">
+          <button type="button" class="btn-link" id="btnForgotPassword">Esqueci minha senha</button>
+        </div>
+
+        <div id="loginError" class="auth-error" style="display: none;" role="alert"></div>
+
+        <button type="submit" class="btn btn--primary btn--full btn--lg" id="btnLoginSubmit">Entrar na Feira</button>
+      </form>
+
+      <!-- Registro Multi-Perfil -->
+      <form id="registerForm" class="auth-form" style="display: none;">
+        <h3 class="auth-form__title">Criar Conta na Feira Virtual</h3>
+        <p class="auth-form__subtitle">Escolha seu perfil de atuação e preencha os dados.</p>
+
+        <div class="role-selector" role="radiogroup" aria-label="Tipo de conta">
+          <label class="role-option active">
+            <input type="radio" name="regRole" value="cliente" checked />
+            <span>
+              <svg class="icon" width="16" height="16" aria-hidden="true"><use href="{% static 'assets/icons.svg' %}#icon-shopping-cart"></use></svg>
+              Cliente
+            </span>
+          </label>
+          <label class="role-option">
+            <input type="radio" name="regRole" value="produtor" />
+            <span>
+              <svg class="icon" width="16" height="16" aria-hidden="true"><use href="{% static 'assets/icons.svg' %}#icon-wheat"></use></svg>
+              Produtor
+            </span>
+          </label>
+          <label class="role-option">
+            <input type="radio" name="regRole" value="entregador" />
+            <span>
+              <svg class="icon" width="16" height="16" aria-hidden="true"><use href="{% static 'assets/icons.svg' %}#icon-bike"></use></svg>
+              Entregador
+            </span>
+          </label>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="regFirstName">Nome:</label>
+            <input type="text" id="regFirstName" required placeholder="Ex: Maria" class="form-input" />
+          </div>
+          <div class="form-group">
+            <label for="regLastName">Sobrenome:</label>
+            <input type="text" id="regLastName" required placeholder="Ex: Silva" class="form-input" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="regEmail">E-mail:</label>
+            <input type="email" id="regEmail" required placeholder="seu@email.com" class="form-input" />
+          </div>
+          <div class="form-group">
+            <label for="regTelefone">Telefone / WhatsApp:</label>
+            <input type="text" id="regTelefone" placeholder="(11) 99999-8888" class="form-input" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="regUsername">Usuário:</label>
+            <input type="text" id="regUsername" required placeholder="Escolha um usuário" class="form-input" />
+          </div>
+          <div class="form-group">
+            <label for="regPassword">Senha (mín. 8 dígitos):</label>
+            <div class="password-field">
+              <input type="password" id="regPassword" required placeholder="Mínimo 8 caracteres" class="form-input" autocomplete="new-password" />
+              <button type="button" class="password-toggle" data-target="regPassword" aria-label="Mostrar senha" aria-pressed="false">
+                <svg class="icon" width="18" height="18" aria-hidden="true"><use href="{% static 'assets/icons.svg' %}#icon-eye"></use></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Campos de Produtor -->
+        <fieldset id="regProducerFields" class="fieldset-group" style="display: none;">
+          <legend>Dados da Propriedade Rural</legend>
+          <div class="form-group">
+            <label for="regNomePropriedade">Nome da Propriedade / Sítio:</label>
+            <input type="text" id="regNomePropriedade" placeholder="Ex: Sítio Boa Vista" class="form-input" />
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="regCidade">Cidade:</label>
+              <input type="text" id="regCidade" placeholder="Ex: Campinas" class="form-input" />
+            </div>
+            <div class="form-group">
+              <label for="regEstado">UF:</label>
+              <input type="text" id="regEstado" maxlength="2" placeholder="SP" class="form-input" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="regDescricao">Descrição da produção:</label>
+            <textarea id="regDescricao" rows="2" placeholder="Hortaliças orgânicas, frutas da estação..."
+              class="form-input"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="regChavePix">Chave Pix para recebimento:</label>
+            <input type="text" id="regChavePix" placeholder="CPF, e-mail, telefone ou aleatória" class="form-input" />
+          </div>
+          <div class="form-group">
+            <label for="regFotoPropriedade">Foto da propriedade (opcional, JPEG/PNG/WebP até 5MB):</label>
+            <input type="file" id="regFotoPropriedade" accept="image/jpeg,image/png,image/webp" class="form-input" />
+          </div>
+          <div class="checkbox-row">
+            <label><input type="checkbox" id="regPossuiMaquininha" /> Aceito cartão (maquininha)</label>
+            <label><input type="checkbox" id="regAceitaDinheiro" checked /> Aceito dinheiro</label>
+          </div>
+        </fieldset>
+
+        <!-- Campos de Entregador -->
+        <fieldset id="regDeliveryFields" class="fieldset-group" style="display: none;">
+          <legend>Dados de Entrega</legend>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="regVeiculo">Veículo:</label>
+              <input type="text" id="regVeiculo" placeholder="Ex: Moto 160cc / Utilitário" class="form-input" />
+            </div>
+            <div class="form-group">
+              <label for="regPlaca">Placa:</label>
+              <input type="text" id="regPlaca" placeholder="ABC1D23" class="form-input" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="regAreaAtuacao">Área de atuação:</label>
+            <input type="text" id="regAreaAtuacao" placeholder="Ex: Região central e zona sul" class="form-input" />
+          </div>
+        </fieldset>
+
+        <div id="registerError" class="auth-error" style="display: none;" role="alert"></div>
+
+        <button type="submit" class="btn btn--cta btn--full btn--lg" id="btnRegisterSubmit">Criar minha conta</button>
+      </form>
+
+      <!-- Recuperar e Redefinir Senha (sem exposição de UID/Token crus) -->
+      <div id="recoverWrap" class="auth-form" style="display: none;">
+        <h3 class="auth-form__title" id="recoverModalHeading">Recuperação de Senha</h3>
+        <p class="auth-form__subtitle" id="recoverModalSubtitle">Informe seu e-mail cadastrado e enviaremos um link seguro para você cadastrar uma nova senha.</p>
+
+        <form id="recoverForm">
+          <div class="form-group">
+            <label for="recoverEmail">Seu e-mail cadastrado:</label>
+            <input type="email" id="recoverEmail" required placeholder="seu@email.com" class="form-input" autocomplete="email" />
+          </div>
+          <div id="recoverError" class="auth-error" style="display: none;" role="alert"></div>
+          <button type="submit" class="btn btn--primary btn--full" id="btnRecoverSubmit">Enviar link de redefinição</button>
+        </form>
+
+        <div id="recoverSentState" class="recover-sent-box" style="display: none;" role="status">
+          <strong style="display: inline-flex; align-items: center; gap: 8px;">
+            <svg class="icon" width="20" height="20" aria-hidden="true"><use href="{% static 'assets/icons.svg' %}#icon-mail-check"></use></svg>
+            Verifique seu e-mail
+          </strong>
+          <p>Se o endereço informado estiver cadastrado, enviamos um link seguro para redefinição de senha. Clique no link recebido para definir sua nova senha.</p>
+          <button type="button" class="btn btn--outline btn--sm" id="btnRecoverSendAnother" style="align-self: flex-start;">Solicitar para outro e-mail</button>
+        </div>
+
+        <form id="resetConfirmForm" style="display: none;">
+          <input type="hidden" id="resetUid" />
+          <input type="hidden" id="resetToken" />
+          <div class="form-group">
+            <label for="resetNovaSenha">Nova senha (mín. 8 caracteres):</label>
+            <div class="password-field">
+              <input type="password" id="resetNovaSenha" required minlength="8" class="form-input" autocomplete="new-password" />
+              <button type="button" class="password-toggle" data-target="resetNovaSenha" aria-label="Mostrar senha" aria-pressed="false">
+                <svg class="icon" width="18" height="18" aria-hidden="true"><use href="{% static 'assets/icons.svg' %}#icon-eye"></use></svg>
+              </button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="resetConfirmSenha">Confirmar nova senha:</label>
+            <div class="password-field">
+              <input type="password" id="resetConfirmSenha" required minlength="8" class="form-input" autocomplete="new-password" />
+              <button type="button" class="password-toggle" data-target="resetConfirmSenha" aria-label="Mostrar senha" aria-pressed="false">
+                <svg class="icon" width="18" height="18" aria-hidden="true"><use href="{% static 'assets/icons.svg' %}#icon-eye"></use></svg>
+              </button>
+            </div>
+          </div>
+          <div id="resetError" class="auth-error" style="display: none;" role="alert"></div>
+          <button type="submit" class="btn btn--cta btn--full" id="btnResetConfirmSubmit">Confirmar Nova Senha</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== MODAL DE CHECKOUT ===================== -->
+  <div class="modal-overlay" id="checkoutModalOverlay" aria-hidden="true">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="checkoutModalTitle">
+      <button type="button" class="btn-close modal-close" id="btnCloseCheckoutModal"
+        aria-label="Fechar checkout">✕</button>
+
+      <h3 id="checkoutModalTitle" class="auth-form__title">Confirmar Pedido</h3>
+      <p class="auth-form__subtitle">Revise os detalhes para enviar diretamente ao produtor.</p>
+
+      <form id="checkoutForm" class="auth-form">
+        <div id="checkoutProducerSummary" class="checkout-producers-summary"></div>
+
+        <div class="checkout-total-card">
+          <span>Total a pagar:</span>
+          <strong id="checkoutTotalDisplay">R$ 0,00</strong>
+        </div>
+        <div id="checkoutFeeBreakdown" class="checkout-fee-breakdown" style="display: none;"></div>
+
+        <div class="form-group">
+          <label><strong>Modalidade de Entrega:</strong></label>
+          <div class="radio-cards">
+            <label class="radio-card active">
+              <input type="radio" name="modalidade" value="RETIRADA" checked />
+              <div>
+                <strong>Retirada com o produtor</strong>
+                <span>Você retira diretamente na propriedade (Sem taxa)</span>
+              </div>
+            </label>
+            <label class="radio-card">
+              <input type="radio" name="modalidade" value="ENTREGA" />
+              <div>
+                <strong>Entrega em domicílio</strong>
+                <span>Entregador parceiro leva até seu endereço</span>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-group" id="enderecoGroup" style="display: none;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <label for="enderecoSelect" style="margin-bottom: 0;"><strong>Endereço de entrega:</strong></label>
+            <button type="button" class="btn-link" id="btnQuickAddAddress">+ Novo endereço</button>
+          </div>
+          <select id="enderecoSelect" class="form-select" style="width: 100%; border-radius: var(--radius-md);">
+            <option value="">Carregando endereços...</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label><strong>Forma de Pagamento:</strong></label>
+          <div class="payment-options">
+            <label class="payment-option active">
+              <input type="radio" name="forma_pagamento" value="PIX" checked />
+              <span><img src="{% static 'assets/pix-icon.webp' %}" alt="" class="pix-brand-icon" width="16" height="16" /> Pix</span>
+            </label>
+            <label class="payment-option">
+              <input type="radio" name="forma_pagamento" value="CARTAO" />
+              <span>
+                <svg class="icon" width="16" height="16" aria-hidden="true"><use href="{% static 'assets/icons.svg' %}#icon-credit-card"></use></svg>
+                Cartão
+              </span>
+            </label>
+            <label class="payment-option">
+              <input type="radio" name="forma_pagamento" value="DINHEIRO" />
+              <span>
+                <svg class="icon" width="16" height="16" aria-hidden="true"><use href="{% static 'assets/icons.svg' %}#icon-banknote"></use></svg>
+                Dinheiro
+              </span>
+            </label>
+          </div>
+          <p id="paymentUnavailableHint" class="form-help" style="display: none;" role="status"></p>
+        </div>
+
+        <div class="form-group">
+          <label for="checkoutObs">Observações para o produtor (opcional):</label>
+          <input type="text" id="checkoutObs" placeholder="Ex: Embalar com cuidado, retirar após as 14h..."
+            class="form-input" />
+        </div>
+
+        <div id="checkoutError" class="auth-error" style="display: none;" role="alert"></div>
+
+        <button type="submit" class="btn btn--cta btn--full btn--lg" id="btnConfirmOrder">Confirmar e Enviar
+          Pedido</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===================== MODAIS DE DETALHE (PRODUTO / PRODUTOR) ===================== -->
+  <div class="modal-overlay" id="productDetailModalOverlay" aria-hidden="true">
+    <div class="modal-card modal-card--lg" role="dialog" aria-modal="true" aria-label="Detalhes do Produto">
+      <button type="button" class="btn-close modal-close" id="btnCloseProductDetailModal"
+        aria-label="Fechar detalhes">✕</button>
+      <div id="productDetailBody"></div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="producerDetailModalOverlay" aria-hidden="true">
+    <div class="modal-card modal-card--lg" role="dialog" aria-modal="true" aria-label="Detalhes do Produtor">
+      <button type="button" class="btn-close modal-close" id="btnCloseProducerDetailModal"
+        aria-label="Fechar produtor">✕</button>
+      <div id="producerDetailBody"></div>
+    </div>
+  </div>
+
+  <!-- ===================== MODAL MEUS PEDIDOS, AVALIAÇÕES & RECLAMAÇÕES ===================== -->
+  <div class="modal-overlay" id="myOrdersModalOverlay" aria-hidden="true">
+    <div class="modal-card modal-card--xl" role="dialog" aria-modal="true" aria-labelledby="myOrdersTitle">
+      <button type="button" class="btn-close modal-close" id="btnCloseMyOrdersModal"
+        aria-label="Fechar pedidos">✕</button>
+      <h3 id="myOrdersTitle" class="auth-form__title">
+        <svg class="icon" width="22" height="22" aria-hidden="true"><use href="{% static 'assets/icons.svg' %}#icon-package"></use></svg>
+        Meus Pedidos
+      </h3>
+      <div class="panel-tabs">
+        <button type="button" class="panel-tab active" id="tabOrdersList">Pedidos Realizados</button>
+        <button type="button" class="panel-tab" id="tabMyReviews">Minhas Avaliações</button>
+        <button type="button" class="panel-tab" id="tabMyComplaints">Minhas Reclamações</button>
+      </div>
+      <div id="myOrdersList" class="orders-list"></div>
+      <div id="myOrdersPagination" class="pagination-wrap"></div>
+      <div id="myReviewsList" class="orders-list" style="display: none;"></div>
+      <div id="myReviewsPagination" class="pagination-wrap" style="display: none;"></div>
+      <div id="myComplaintsList" class="orders-list" style="display: none;"></div>
+      <div id="myComplaintsPagination" class="pagination-wrap" style="display: none;"></div>
+    </div>
+  </div>
+
+  <!-- ===================== MODAL PIX ===================== -->
+  <div class="modal-overlay" id="pixModalOverlay" aria-hidden="true">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="pixModalTitle">
+      <button type="button" class="btn-close modal-close" id="btnClosePixModal" aria-label="Fechar Pix">✕</button>
+      <h3 id="pixModalTitle" class="auth-form__title" style="display: flex; align-items: center; gap: 8px;">
+        <img src="{% static 'assets/pix-icon.webp' %}" alt="" class="pix-brand-icon pix-brand-icon--lg" width="22" height="22" />
+        <span>Pagamento via Pix</span>
+      </h3>
+      <p class="auth-form__subtitle">Escaneie o QR Code ou copie o código Pix abaixo para pagar diretamente ao produtor.
+      </p>
+      <div id="pixSimuladoNotice" class="demo-box" style="display: none;" role="status">
+        Pagamento Pix simulado (ambiente de demonstração) — o QR Code não é escaneável.
+      </div>
+      <div class="pix-box">
+        <div id="pixQrContainer" class="pix-qr-wrap"></div>
+        <p>Valor: <strong id="pixValorDisplay">R$ 0,00</strong></p>
+        <p>Chave Pix: <strong id="pixChaveDisplay">-</strong></p>
+        <div class="form-group" style="width: 100%; margin-top: var(--space-3);">
+          <label for="pixCopiaColaInput">Pix Copia e Cola:</label>
+          <input type="text" id="pixCopiaColaInput" class="form-input" readonly />
+        </div>
+        <button type="button" class="btn btn--cta btn--full" id="btnCopyPix">
+          <svg class="icon" width="18" height="18" aria-hidden="true"><use href="{% static 'assets/icons.svg' %}#icon-clipboard"></use></svg>
+          Copiar código Pix
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== MODAL AVALIAÇÃO ===================== -->
+  <div class="modal-overlay modal-overlay--top" id="reviewModalOverlay" aria-hidden="true">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="reviewModalTitle">
+      <button type="button" class="btn-close modal-close" id="btnCloseReviewModal"
+        aria-label="Fechar avaliação">✕</button>
+      <h3 id="reviewModalTitle" class="auth-form__title">Avaliar Compra</h3>
+      <p id="reviewOrderContext" class="auth-form__subtitle"></p>
+      <form id="reviewForm">
+        <input type="hidden" id="reviewOrderId" />
+        <input type="hidden" id="reviewEditId" />
+        <div class="form-group" id="reviewTargetGroup">
+          <label for="reviewTarget">O que deseja avaliar:</label>
+          <select id="reviewTarget" class="form-input"></select>
+        </div>
+        <div class="form-group">
+          <label>Nota:</label>
+          <div class="rating-row">
+            <label><input type="radio" name="reviewNota" value="5" checked /> 5 estrelas</label>
+            <label><input type="radio" name="reviewNota" value="4" /> 4 estrelas</label>
+            <label><input type="radio" name="reviewNota" value="3" /> 3 estrelas</label>
+            <label><input type="radio" name="reviewNota" value="2" /> 2 estrelas</label>
+            <label><input type="radio" name="reviewNota" value="1" /> 1 estrela</label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="reviewComment">Comentário (opcional):</label>
+          <textarea id="reviewComment" rows="3" class="form-input"
+            placeholder="Como foi a qualidade, entrega e o atendimento?"></textarea>
+        </div>
+        <div id="reviewError" class="auth-error" style="display: none;" role="alert"></div>
+        <button type="submit" class="btn btn--primary btn--full" id="btnSubmitReview">Enviar Avaliação</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===================== MODAL RECLAMAÇÃO ===================== -->
+  <div class="modal-overlay" id="complaintModalOverlay" aria-hidden="true">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="complaintModalTitle">
+      <button type="button" class="btn-close modal-close" id="btnCloseComplaintModal"
+        aria-label="Fechar reclamação">✕</button>
+      <h3 id="complaintModalTitle" class="auth-form__title">
+        <svg class="icon" width="22" height="22" aria-hidden="true"><use href="{% static 'assets/icons.svg' %}#icon-alert-triangle"></use></svg>
+        Registrar Reclamação
+      </h3>
+      <p id="complaintOrderLabel" class="auth-form__subtitle"></p>
+      <form id="complaintForm">
+        <input type="hidden" id="complaintOrderId" />
+        <div class="form-group">
+          <label for="complaintSubject">Assunto:</label>
+          <input type="text" id="complaintSubject" required placeholder="Ex: Produto avariado / Atraso na entrega"
+            class="form-input" />
+        </div>
+        <div class="form-group">
+          <label for="complaintDescription">Descreva o ocorrido:</label>
+          <textarea id="complaintDescription" rows="4" required class="form-input"></textarea>
+        </div>
+        <div id="complaintError" class="auth-error" style="display: none;" role="alert"></div>
+        <button type="submit" class="btn btn--cta btn--full">Enviar para Moderação</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===================== MODAL ENDEREÇOS (VIACEP) ===================== -->
+  <div class="modal-overlay" id="addressesModalOverlay" aria-hidden="true">
+    <div class="modal-card modal-card--lg" role="dialog" aria-modal="true" aria-labelledby="addressesModalTitle">
+      <button type="button" class="btn-close modal-close" id="btnCloseAddressesModal"
+        aria-label="Fechar endereços">✕</button>
+      <h3 id="addressesModalTitle" class="auth-form__title">
+        <svg class="icon" width="22" height="22" aria-hidden="true"><use href="{% static 'assets/icons.svg' %}#icon-map-pin"></use></svg>
+        Meus Endereços
+      </h3>
+      <div id="addressesList" class="addresses-list"></div>
+
+      <hr style="margin-block: var(--space-5); border: none; border-top: 1px solid var(--border);" />
+      <h4 id="addressFormTitle" style="margin-bottom: var(--space-3);">Adicionar Novo Endereço</h4>
+      <form id="addressForm">
+        <input type="hidden" id="addrEditId" />
+        <div class="form-row">
+          <div class="form-group">
+            <label for="addrRotulo">Rótulo:</label>
+            <input type="text" id="addrRotulo" value="Casa" required class="form-input" />
+          </div>
+          <div class="form-group">
+            <label for="addrCep">CEP (busca automática):</label>
+            <input type="text" id="addrCep" placeholder="00000-000" maxlength="9" class="form-input" />
+            <span id="addrCepStatus" class="form-help"></span>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="addrLogradouro">Logradouro:</label>
+            <input type="text" id="addrLogradouro" required class="form-input" />
+          </div>
+          <div class="form-group">
+            <label for="addrNumero">Número:</label>
+            <input type="text" id="addrNumero" required class="form-input" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="addrComplemento">Complemento:</label>
+            <input type="text" id="addrComplemento" class="form-input" />
+          </div>
+          <div class="form-group">
+            <label for="addrBairro">Bairro:</label>
+            <input type="text" id="addrBairro" required class="form-input" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="addrCidade">Cidade:</label>
+            <input type="text" id="addrCidade" required class="form-input" />
+          </div>
+          <div class="form-group">
+            <label for="addrEstado">UF:</label>
+            <input type="text" id="addrEstado" maxlength="2" required class="form-input" />
+          </div>
+        </div>
+        <div id="addressError" class="auth-error" style="display: none;" role="alert"></div>
+        <button type="submit" class="btn btn--primary btn--full" id="btnSaveAddress">Salvar Endereço</button>
+        <button type="button" class="btn btn--outline btn--full" id="btnCancelAddressEdit" style="display: none; margin-top: var(--space-2);">Cancelar edição</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===================== MODAL EDITAR PERFIL ===================== -->
+  <div class="modal-overlay" id="profileModalOverlay" aria-hidden="true">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="profileModalTitle">
+      <button type="button" class="btn-close modal-close" id="btnCloseProfileModal"
+        aria-label="Fechar perfil">✕</button>
+      <h3 id="profileModalTitle" class="auth-form__title">
+        <svg class="icon" width="22" height="22" aria-hidden="true"><use href="{% static 'assets/icons.svg' %}#icon-user"></use></svg>
+        Meu Perfil
+      </h3>
+      <form id="profileForm">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="profFirstName">Nome:</label>
+            <input type="text" id="profFirstName" required class="form-input" />
+          </div>
+          <div class="form-group">
+            <label for="profLastName">Sobrenome:</label>
+            <input type="text" id="profLastName" required class="form-input" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="profEmail">E-mail:</label>
+          <input type="email" id="profEmail" required class="form-input" />
+        </div>
+        <div class="form-group">
+          <label for="profTelefone">Telefone:</label>
+          <input type="text" id="profTelefone" class="form-input" />
+        </div>
+        <div id="profileError" class="auth-error" style="display: none;" role="alert"></div>
+        <button type="submit" class="btn btn--primary btn--full">Salvar Alterações</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===================== MODAL AVALIAR CLIENTE (PRODUTOR) ===================== -->
+  <div class="modal-overlay" id="clientReviewModalOverlay" aria-hidden="true">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="clientReviewModalTitle">
+      <button type="button" class="btn-close modal-close" id="btnCloseClientReviewModal"
+        aria-label="Fechar avaliação de cliente">✕</button>
+      <h3 id="clientReviewModalTitle" class="auth-form__title">Avaliar Cliente</h3>
+      <p id="clientReviewOrderLabel" class="auth-form__subtitle"></p>
+      <form id="clientReviewForm">
+        <input type="hidden" id="clientReviewOrderId" />
+        <div class="form-group">
+          <label>Nota da experiência (comunicação, pontualidade e retirada/entrega):</label>
+          <div class="rating-row">
+            <label><input type="radio" name="clientReviewNota" value="5" checked /> 5 estrelas</label>
+            <label><input type="radio" name="clientReviewNota" value="4" /> 4 estrelas</label>
+            <label><input type="radio" name="clientReviewNota" value="3" /> 3 estrelas</label>
+            <label><input type="radio" name="clientReviewNota" value="2" /> 2 estrelas</label>
+            <label><input type="radio" name="clientReviewNota" value="1" /> 1 estrela</label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="clientReviewComment">Comentário (opcional):</label>
+          <textarea id="clientReviewComment" rows="3" class="form-input"
+            placeholder="Ex: Comunicação clara, pontual na retirada e ótimo relacionamento."></textarea>
+        </div>
+        <div id="clientReviewError" class="auth-error" style="display: none;" role="alert"></div>
+        <button type="submit" class="btn btn--primary btn--full">Registrar Avaliação</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===================== MODAL EXCLUSÃO DE CONTA (LGPD) ===================== -->
+  <div class="modal-overlay modal-overlay--top" id="deleteAccountModalOverlay" aria-hidden="true">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="deleteAccountModalTitle">
+      <button type="button" class="btn-close modal-close" id="btnCloseDeleteAccountModal"
+        aria-label="Fechar exclusão de conta">✕</button>
+      <h3 id="deleteAccountModalTitle" class="auth-form__title text-danger">
+        <svg class="icon" width="22" height="22" aria-hidden="true"><use href="{% static 'assets/icons.svg' %}#icon-alert-triangle"></use></svg>
+        Excluir e Anonimizar Conta (LGPD)
+      </h3>
+      <p class="auth-form__subtitle">Esta ação é definitiva e irreversível. Ao confirmar:</p>
+      <ul class="lgpd-impact-list">
+        <li>Seus dados pessoais (nome, e-mail e telefone) serão anonimizados.</li>
+        <li>Seus endereços cadastrados serão excluídos e suas sessões encerradas.</li>
+        <li>Caso seja produtor, sua propriedade será suspensa e seus produtos ocultados.</li>
+        <li>Pedidos e registros fiscais/históricos serão preservados sem identificação pessoal.</li>
+      </ul>
+      <form id="deleteAccountForm">
+        <div class="form-group">
+          <label for="deleteAccountPassword">Confirme sua senha atual:</label>
+          <div class="password-field">
+            <input type="password" id="deleteAccountPassword" required placeholder="Digite sua senha atual" class="form-input" autocomplete="current-password" />
+            <button type="button" class="password-toggle" data-target="deleteAccountPassword" aria-label="Mostrar senha" aria-pressed="false">
+              <svg class="icon" width="18" height="18" aria-hidden="true"><use href="{% static 'assets/icons.svg' %}#icon-eye"></use></svg>
+            </button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label style="display: flex; align-items: flex-start; gap: 8px; font-weight: 500; cursor: pointer;">
+            <input type="checkbox" id="deleteAccountConfirmCheck" style="margin-top: 3px;" />
+            <span>Compreendo que esta ação é permanente e desejo anonimizar minha conta.</span>
+          </label>
+        </div>
+        <div id="deleteAccountError" class="auth-error" style="display: none;" role="alert"></div>
+        <div class="confirm-modal-actions">
+          <button type="button" class="btn btn--outline" id="btnCancelDeleteAccount">Cancelar</button>
+          <button type="submit" class="btn btn--danger" id="btnConfirmDeleteAccount" disabled>Excluir minha conta</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===================== MODAL DETALHES ADMINISTRATIVOS ===================== -->
+  <div class="modal-overlay modal-overlay--top" id="adminDetailModalOverlay" aria-hidden="true">
+    <div class="modal-card modal-card--lg" role="dialog" aria-modal="true" aria-labelledby="adminDetailTitle">
+      <button type="button" class="btn-close modal-close" id="btnCloseAdminDetailModal"
+        aria-label="Fechar detalhes">✕</button>
+      <h3 id="adminDetailTitle" class="auth-form__title">Detalhes do Registro</h3>
+      <div id="adminDetailBody"></div>
+    </div>
+  </div>
+
+  <!-- ===================== MODAL CONFIRMAÇÃO ADMINISTRATIVA ===================== -->
+  <div class="modal-overlay modal-overlay--top" id="adminConfirmModalOverlay" aria-hidden="true">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="adminConfirmTitle">
+      <button type="button" class="btn-close modal-close" id="btnCloseAdminConfirmModal"
+        aria-label="Fechar confirmação">✕</button>
+      <h3 id="adminConfirmTitle" class="auth-form__title">Confirmar exclusão</h3>
+      <p id="adminConfirmMessage" class="detail-desc"></p>
+      <p id="adminConfirmHint" class="text-muted" style="margin-bottom: var(--space-5);"></p>
+      <div class="confirm-modal-actions">
+        <button type="button" class="btn btn--outline" id="btnCancelAdminConfirm">Cancelar</button>
+        <button type="button" class="btn btn--danger" id="btnProceedAdminConfirm">Confirmar exclusão</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Container de Toasts flutuantes -->
+  <div id="toastContainer" class="toast-container" aria-live="polite"></div>
+
+  <script type="module" src="{% static 'main.js' %}?v=20261121b"></script>
+</body>
+
+</html>

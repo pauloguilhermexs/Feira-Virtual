@@ -1,0 +1,9 @@
+# Dependências de desenvolvimento, testes e qualidade de código
+-r requirements.txt
+
+pytest>=8.0.0
+pytest-django>=4.8.0
+coverage>=7.4.0
+ruff>=0.4.0
+
+playwright>=1.48,<2

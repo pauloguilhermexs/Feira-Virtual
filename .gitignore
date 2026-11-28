@@ -10,3 +10,10 @@ htmlcov/
 .idea/
 node_modules/
 
+
+.venv/
+.pytest_cache/
+.coverage*
+!.coveragerc
+reports/testes/
+__pycache__/

@@ -1,0 +1,22 @@
+{
+  "id": "/",
+  "name": "Feira Virtual — Venda Direta",
+  "short_name": "Feira Virtual",
+  "description": "Plataforma de venda direta da agricultura familiar. Produtos frescos direto de quem planta.",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#1B4312",
+  "theme_color": "#246F11",
+  "lang": "pt-BR",
+  "icons": [
+    { "src": "/static/assets/favicon-32.png", "sizes": "32x32", "type": "image/png" },
+    { "src": "/static/assets/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" },
+    { "src": "/static/assets/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "/static/assets/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ],
+  "categories": ["food", "shopping"],
+  "screenshots": [
+    { "src": "/static/assets/og-image.png", "sizes": "1200x630", "type": "image/png" }
+  ]
+}

@@ -1,0 +1,6 @@
+[run]
+branch = True
+source = usuarios,catalogo,pedidos,avaliacoes,painel,config
+omit = config/settings_test.py
+[report]
+show_missing = True
