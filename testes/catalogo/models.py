@@ -1,0 +1,61 @@
+from decimal import Decimal
+
+from django.core.validators import MinValueValidator
+from django.db import models
+
+
+class Categoria(models.Model):
+    nome = models.CharField(max_length=80, unique=True)
+    descricao = models.CharField(max_length=255, blank=True)
+    ativa = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ["nome"]
+        indexes = [
+            models.Index(fields=["ativa", "nome"]),
+        ]
+
+    def __str__(self):
+        return self.nome
+
+
+class Produto(models.Model):
+    class Unidade(models.TextChoices):
+        KG = "KG", "kg"
+        G = "G", "g"
+        L = "L", "L"
+        ML = "ML", "ml"
+        UNIDADE = "UNIDADE", "unidade"
+        CAIXA = "CAIXA", "caixa"
+        SACO = "SACO", "saco"
+        MACO = "MACO", "maço"
+
+    class TipoProducao(models.TextChoices):
+        ORGANICO_CERTIFICADO = "ORGANICO_CERTIFICADO", "Orgânico certificado"
+        AGROECOLOGICO = "AGROECOLOGICO", "Agroecológico"
+        CONVENCIONAL = "CONVENCIONAL", "Convencional"
+
+    produtor = models.ForeignKey("usuarios.PerfilProdutor", on_delete=models.CASCADE, related_name="produtos")
+    categoria = models.ForeignKey(Categoria, on_delete=models.PROTECT, related_name="produtos")
+    nome = models.CharField(max_length=150)
+    descricao = models.TextField(blank=True)
+    preco = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(Decimal("0.01"))])
+    unidade_medida = models.CharField(max_length=10, choices=Unidade.choices, default=Unidade.UNIDADE)
+    estoque = models.DecimalField(max_digits=10, decimal_places=3, validators=[MinValueValidator(Decimal("0"))])
+    tipo_producao = models.CharField(max_length=25, choices=TipoProducao.choices, default=TipoProducao.CONVENCIONAL)
+    imagem = models.ImageField(upload_to="produtos/%Y/%m/", blank=True, null=True)
+    ativo = models.BooleanField(default=True, help_text="Controle de visibilidade gerenciado pelo produtor.")
+    oculto_moderacao = models.BooleanField(default=False, help_text="Ocultado pela moderação administrativa (produtor não pode reverter).")
+    excluido_em = models.DateTimeField(null=True, blank=True, help_text="Preenchido na desativação lógica (soft delete).")
+    criado_em = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["nome"]
+        indexes = [
+            models.Index(fields=["ativo", "categoria"]),
+            models.Index(fields=["produtor", "ativo"]),
+            models.Index(fields=["tipo_producao", "ativo"]),
+        ]
+
+    def __str__(self):
+        return f"{self.nome} ({self.produtor})"
