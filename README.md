@@ -110,7 +110,7 @@ API REST em **Django REST Framework** (JSON / `multipart` validado com Pillow, `
 | **Entregador** (`EhEntregador`) | Vê endereço resumido antes do aceite; segue `PRONTO → EM_ENTREGA → CONCLUIDO` apenas em entregas próprias. |
 | **Administrador** (`EhAdmin`) | Gerencia usuários, aprova/suspende produtores, modera catálogo/reclamações/avaliações e audita via `LogAuditoria`. |
 
-### 4.4. CI e Testes
+
 
 ### 4.4. CI e Testes
 
