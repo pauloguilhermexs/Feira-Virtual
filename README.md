@@ -112,18 +112,72 @@ API REST em **Django REST Framework** (JSON / `multipart` validado com Pillow, `
 
 ### 4.4. CI e Testes
 
-**42 testes automatizados aprovados** (cobertura medida de **87%** via `coverage`): [`usuarios/tests.py`](usuarios/tests.py) (**10**), [`catalogo/tests.py`](catalogo/tests.py) (**9**), [`pedidos/tests.py`](pedidos/tests.py) (**13**), [`avaliacoes/tests.py`](avaliacoes/tests.py) (**4**) e [`painel/tests.py`](painel/tests.py) (**6**). Cobrem cadastros, RBAC, anti-IDOR, estoque transacional, Pix HMAC, entregas, avaliações recíprocas, LGPD, moderação, CSP e anti-*Path Traversal*.  
-**CI ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)):** pipeline no **GitHub Actions** disparada em `push`, `pull_request` (`main` e `dev`) e `workflow_dispatch`, composta por três jobs:
-- **`backend-tests` (Python 3.12):** instala dependências, executa `manage.py check`, `makemigrations --check --dry-run`, `spectacular --validate`, `check --deploy` e os 42 testes com relatório de cobertura (`coverage`).
-- **`frontend-lint` (Node.js 22):** executa **ESLint** (`npm run lint:js`) nos ES Modules (`frontend/main.js` e `frontend/js/*.js`) e **Prettier** (`npm run format:check`) em JS e CSS.
-- **`docker-build`:** valida a sintaxe de `docker compose config --quiet` e o build completo da imagem `Dockerfile`.
+### 4.4. CI e Testes
+
+A Feira Virtual possui uma suíte de testes automatizados organizada conforme a pirâmide de testes apresentada no capítulo 8 de *Engenharia de Software Moderna*, de Marco Tulio Valente.
+
+**Última execução registrada (27/11/2026):**
+
+| Tipo de teste | Aprovados | Falhas |
+|---|---:|---:|
+| Unidade | 68 | 0 |
+| Integração | 52 | 0 |
+| Sistema | 5 | 0 |
+| **Total** | **125** | **0** |
+
+- **Duração total:** 73,80 segundos.
+- **Cobertura de linhas:** 87,61%.
+- **Cobertura de ramificações:** 62,36%.
+- **Frameworks:** pytest, pytest-django e Playwright.
+- **Banco utilizado nos testes:** SQLite isolado.
+- **Navegador utilizado:** Chrome/Chromium headless.
+
+#### Testes de unidade
+
+Verificam isoladamente regras de negócio, validações, permissões, cálculos financeiros e tratamento de dados dos módulos `usuarios`, `catalogo`, `pedidos`, `avaliacoes` e `painel`.
+
+#### Testes de integração
+
+Verificam a comunicação entre APIs, banco de dados e módulos, incluindo cadastro de produtores, carrinho, checkout, atualização de estoque, pagamentos Pix simulados, entregas, avaliações e moderação.
+
+#### Testes de sistema
+
+Utilizam Playwright para simular a interação de usuários reais com a interface da Feira Virtual, incluindo o fluxo de compra, preparação, entrega e avaliação.
+
+#### Relatório visual
+
+Os resultados estão disponíveis em um painel HTML contendo status de aprovação, duração de execução, descrição dos testes, árvore de navegação e cobertura.
+
+**[Visualizar o painel de testes](https://caiocdms.github.io/Feira-Virtual/)**
+
+Documentação complementar:
+
+- [Documentação dos testes](docs/TESTES.md)
+- [Inventário de unidades e integrações](docs/INVENTARIO_TESTES.md)
+- [Imagem do relatório](docs/visao-geral.png)
+
+#### Como executar
+
+Instale as dependências de desenvolvimento e o navegador de testes:
 
 ```bash
-python manage.py check && python manage.py makemigrations --check --dry-run
-python manage.py test -v 2
-python manage.py spectacular --validate --file /tmp/schema.yml
-DJANGO_DEBUG=0 DJANGO_SECRET_KEY='<chave-50+-caracteres>' DJANGO_ALLOWED_HOSTS=localhost SECURE_SSL_REDIRECT=1 python manage.py check --deploy
+pip install -r requirements-dev.txt
+python -m playwright install chromium
 ```
+
+Comandos disponíveis:
+
+```bash
+make test-unit
+make test-integration
+make test-system
+make test-all
+make test-report
+```
+
+A execução automatizada também está configurada no GitHub Actions.
+
+**Limitações:** a suíte ainda não valida a concorrência com MySQL real. Os resultados acima correspondem à última execução registrada e não são atualizados automaticamente pela página publicada.
 
 ### 4.5. Front-End e Demonstração
 
